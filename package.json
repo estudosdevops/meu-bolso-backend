@@ -1,11 +1,31 @@
 {
-  "name": "finance-system-back",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "description": ""
+    "name": "finance-system-back",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsnd --exit-child src/index.ts",
+        "start": "node dist/index.js",
+        "lint": "eslint .",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "prepare": "husky"
+    },
+    "lint-staged": {
+        "src/{*.ts}": "eslint .",
+        "**/*": "prettier --write --ignore-unknown"
+    },
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "devDependencies": {
+        "@eslint/js": "^9.28.0",
+        "eslint": "^9.28.0",
+        "globals": "^16.2.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.1.0",
+        "prettier": "3.5.3",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^5.8.3",
+        "typescript-eslint": "^8.34.0"
+    }
 }

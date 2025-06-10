@@ -13,8 +13,27 @@ export default defineConfig(
     {
       files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
       languageOptions: { globals: globals.node },
+      rules: {
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          { argsIgnorePattern: "^_" },
+        ],
+
+        "@typescript-eslint/explicit-function-return-type": [
+          "warn",
+          {
+            allowExpressions: false,
+            allowTypedFunctionExpressions: true,
+            allowHigherOrderFunctions: true,
+          },
+        ],
+
+        "@typescript-eslint/no-inferrable-types": "warn",
+
+        "no-console": ["warn", { allow: ["warn", "error"] }],
+      },
     },
-    tseslint.configs.recommended,
+    ...tseslint.configs.recommended,
   ],
   globalIgnores(["dist/*"]),
 );

@@ -11,7 +11,7 @@
         "prepare": "husky"
     },
     "lint-staged": {
-        "src/{*.ts}": "eslint .",
+        "src/*.ts": "eslint .",
         "**/*": "prettier --write --ignore-unknown"
     },
     "author": "",

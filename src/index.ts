@@ -1,3 +1,17 @@
-const message = "hello world";
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
 
-console.log(message);
+const app = express();
+
+app.use(express.json());
+app.use(cors());
+
+dotenv.config();
+
+// Routes
+import hello from "./routes/hello_route";
+
+app.use("/", hello);
+
+app.listen(process.env.PORT || 3000);

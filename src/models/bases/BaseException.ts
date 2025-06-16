@@ -1,10 +1,10 @@
 import { HttpStatusCode } from "../../enums/HttpStatusCode";
 
 export default class BaseException extends Error {
-  public readonly statusCode: HttpStatusCode;
+  public readonly statusCode?: HttpStatusCode;
   public readonly error?: unknown;
 
-  constructor(statusCode: HttpStatusCode, message: string, error?: unknown) {
+  constructor(message: string, statusCode?: HttpStatusCode, error?: unknown) {
     super(message);
     this.statusCode = statusCode;
 

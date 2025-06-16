@@ -1,0 +1,15 @@
+services:
+    db:
+      container_name: postres_docker
+      image: postgres:16.9-bullseye
+      expose:
+        - 5432
+      ports:
+        - 5432:5432
+      environment:
+        POSTGRES_DB: finance-localhost
+        POSTGRES_PASSWORD: dockerpass
+      networks:
+        - localNet
+networks:
+    localNet:

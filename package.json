@@ -12,6 +12,7 @@
     },
     "lint-staged": {
         "src/*.ts": "eslint .",
+        "prisma/schema.prisma": "prisma format && prisma validate",
         "**/*": "prettier --write --ignore-unknown"
     },
     "author": "",
@@ -37,6 +38,8 @@
     "dependencies": {
         "@prisma/client": "^6.9.0",
         "cors": "^2.8.5",
-        "express": "^5.1.0"
+        "express": "^5.1.0",
+        "winston": "^3.17.0",
+        "winston-loki": "^6.1.3"
     }
 }

@@ -14,7 +14,7 @@
     "src/*.ts": "eslint .",
     "prisma/schema.prisma": "prisma format && prisma validate",
     "**/*": "prettier --write --ignore-unknown",
-    "test/*.test.*": "jest"
+    "tests/*.test.*": "jest"
   },
   "author": "",
   "license": "ISC",

@@ -1,13 +1,13 @@
 import { Request, Response, Router } from "express";
 import { HttpStatusCode } from "../enums/HttpStatusCode";
-import Hello from "../models/hello";
+import logger from "../configs/logger/logger";
 
 const router = Router();
 
-router.get("/", (req: Request, res: Response) => {
-    const he = new Hello();
+router.get("/", async (req: Request, res: Response) => {
+    logger.info("testando o log");
 
-    res.status(HttpStatusCode.OK).json(he);
+    res.status(HttpStatusCode.OK).json("user");
 });
 
 export default router;

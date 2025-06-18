@@ -3,7 +3,7 @@ networks:
 
 services:
     db:
-      container_name: postres_docker
+      container_name: postgres_docker
       image: postgres:16.9-bullseye
       expose:
         - 5432
@@ -60,4 +60,14 @@ services:
         - "3000:3000"
       networks:
         - localNet
-
+    
+    api:
+      container_name: finance-api
+      build: .
+      expose:
+        - 5000
+      ports:
+        - 5000:5000
+      networks:
+        - localNet
+      env_file: ./.env.production

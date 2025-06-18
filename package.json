@@ -1,45 +1,49 @@
 {
-    "name": "finance-system-back",
-    "version": "1.0.0",
-    "main": "index.js",
-    "scripts": {
-        "build": "tsc",
-        "dev": "tsnd --exit-child src/index.ts",
-        "start": "node dist/index.js",
-        "lint": "eslint .",
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "prepare": "node -e \"if (process.env.NODE_ENV !== 'production'){ process.exit(1) } \" || husky"
-    },
-    "lint-staged": {
-        "src/*.ts": "eslint .",
-        "prisma/schema.prisma": "prisma format && prisma validate",
-        "**/*": "prettier --write --ignore-unknown"
-    },
-    "author": "",
-    "license": "ISC",
-    "description": "",
-    "devDependencies": {
-        "@eslint/js": "^9.28.0",
-        "@mermaid-js/mermaid-cli": "^11.4.3",
-        "@types/cors": "^2.8.19",
-        "@types/express": "^5.0.3",
-        "eslint": "^9.28.0",
-        "globals": "^16.2.0",
-        "husky": "^9.1.7",
-        "lint-staged": "^16.1.0",
-        "prettier": "3.5.3",
-        "prisma": "^6.9.0",
-        "prisma-erd-generator": "^2.0.4",
-        "ts-node-dev": "^2.0.0",
-        "typescript": "^5.8.3",
-        "typescript-eslint": "^8.34.0"
-    },
-    "dependencies": {
-        "@prisma/client": "^6.9.0",
-        "cors": "^2.8.5",
-        "express": "^5.1.0",
-        "winston": "^3.17.0",
-        "winston-loki": "^6.1.3",
-        "dotenv": "^16.5.0"
-    }
+  "name": "finance-system-back",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsnd --exit-child src/index.ts",
+    "start": "node dist/index.js",
+    "lint": "eslint .",
+    "test": "jest",
+    "prepare": "node -e \"if (process.env.NODE_ENV !== 'production'){ process.exit(1) } \" || husky"
+  },
+  "lint-staged": {
+    "src/*.ts": "eslint .",
+    "prisma/schema.prisma": "prisma format && prisma validate",
+    "**/*": "prettier --write --ignore-unknown",
+    "test/*.test.*": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@mermaid-js/mermaid-cli": "^11.4.3",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
+    "eslint": "^9.28.0",
+    "globals": "^16.2.0",
+    "husky": "^9.1.7",
+    "jest": "^30.0.0",
+    "lint-staged": "^16.1.0",
+    "prettier": "3.5.3",
+    "prisma": "^6.9.0",
+    "prisma-erd-generator": "^2.0.4",
+    "ts-jest": "^29.4.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "winston": "^3.17.0",
+    "winston-loki": "^6.1.3"
+  }
 }

@@ -4,36 +4,36 @@ import tseslint from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig(
-  [
-    {
-      files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
-      plugins: { js },
-      extends: ["js/recommended"],
-    },
-    {
-      files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
-      languageOptions: { globals: globals.node },
-      rules: {
-        "@typescript-eslint/no-unused-vars": [
-          "error",
-          { argsIgnorePattern: "^_" },
-        ],
+    [
+        {
+            files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
+            plugins: { js },
+            extends: ["js/recommended"],
+        },
+        {
+            files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
+            languageOptions: { globals: globals.node },
+            rules: {
+                "@typescript-eslint/no-unused-vars": [
+                    "error",
+                    { argsIgnorePattern: "^_|^next" },
+                ],
 
-        "@typescript-eslint/explicit-function-return-type": [
-          "warn",
-          {
-            allowExpressions: false,
-            allowTypedFunctionExpressions: true,
-            allowHigherOrderFunctions: true,
-          },
-        ],
+                "@typescript-eslint/explicit-function-return-type": [
+                    "warn",
+                    {
+                        allowExpressions: false,
+                        allowTypedFunctionExpressions: true,
+                        allowHigherOrderFunctions: true,
+                    },
+                ],
 
-        "@typescript-eslint/no-inferrable-types": "warn",
+                "@typescript-eslint/no-inferrable-types": "warn",
 
-        "no-console": ["warn", { allow: ["warn", "error"] }],
-      },
-    },
-    ...tseslint.configs.recommended,
-  ],
-  globalIgnores(["dist/*"]),
+                "no-console": ["warn", { allow: ["warn", "error"] }],
+            },
+        },
+        ...tseslint.configs.recommended,
+    ],
+    globalIgnores(["dist/*"]),
 );

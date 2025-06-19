@@ -22,7 +22,6 @@ datasource db {
 }
 
 model User {
-
   id    String @id @unique @default(uuid())
   name  String
   email String @unique
@@ -40,14 +39,15 @@ model User {
 }
 
 model BankAccount {
-
   id            String @id @unique @default(uuid())
   accountNumber String @unique
   agency        Int    @unique
-  bank          Bank
   balance       Float
 
   extract Extract[]
+
+  bank   Bank?  @relation(fields: [bankId], references: [id])
+  bankId String @unique
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
@@ -58,7 +58,6 @@ model BankAccount {
 }
 
 model Extract {
-
   id          String      @id @unique @default(uuid())
   description String
   value       Float
@@ -80,7 +79,6 @@ model Extract {
 }
 
 model Expense {
-
   id    String      @id @unique @default(uuid())
   name  String
   value Float? // Value is optional when type is fixed 
@@ -100,7 +98,6 @@ model Expense {
 }
 
 model ExpenseCategory {
-
   id   String @id @unique @default(uuid())
   name String
 
@@ -114,6 +111,16 @@ model ExpenseCategory {
   @@map("expensesCategories")
 }
 
+model Bank {
+  id    String @id @unique @default(uuid())
+  compe Int    @unique
+  ispb  BigInt @unique
+
+  name String
+
+  bankAccount BankAccount?
+}
+
 enum ExpenseType {
   Fixed
   Variable
@@ -122,13 +129,4 @@ enum ExpenseType {
 enum ExtractType {
   Entry
   Exit
-}
-
-enum Bank {
-  Nubank
-  Itau
-  PicPay
-  Pan
-  Caixa
-  Bradesco
 }

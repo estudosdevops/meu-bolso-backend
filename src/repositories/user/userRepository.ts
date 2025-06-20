@@ -124,8 +124,6 @@ export default class UserRepository implements IUserRepository {
             },
         );
 
-        await this.GetPerId(id);
-
         const user = await this._prisma.user.update({
             where: {
                 id,
@@ -157,8 +155,6 @@ export default class UserRepository implements IUserRepository {
                 userId: id,
             },
         );
-
-        await this.GetPerId(id);
 
         await this._prisma.user.update({
             where: { id },

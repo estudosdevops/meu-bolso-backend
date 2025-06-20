@@ -40,10 +40,11 @@ model User {
 }
 
 model BankAccount {
-  id            String @id @unique @default(uuid())
-  accountNumber String @unique
-  agency        Int    @unique
+  id            String  @id @unique @default(uuid())
+  accountNumber String  @unique
+  agency        Int     @unique
   balance       Float
+  active        Boolean @default(true)
 
   extract Extract[]
 

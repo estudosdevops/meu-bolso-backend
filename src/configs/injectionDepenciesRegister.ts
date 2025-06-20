@@ -1,7 +1,21 @@
 import { container } from "tsyringe";
+
 import IUserRepository from "../repositories/user/interfaces/IUserRepository";
 import UserRepository from "../repositories/user/userRepository";
 
-container.register<IUserRepository>("IUserRepository", {
-    useClass: UserRepository,
-});
+import IBankAccountRepository from "../repositories/bankAccount/interfaces/IBankAccountRepository";
+import BankAccountRepository from "../repositories/bankAccount/BankAccountRepository";
+
+import IBankRepository from "../repositories/bank/interfaces/IBankRepository";
+import BankRepository from "../repositories/bank/BankRepository";
+
+container
+    .register<IUserRepository>("IUserRepository", {
+        useClass: UserRepository,
+    })
+    .register<IBankAccountRepository>("IBankAccountRepository", {
+        useClass: BankAccountRepository,
+    })
+    .register<IBankRepository>("IBankRepository", {
+        useClass: BankRepository,
+    });

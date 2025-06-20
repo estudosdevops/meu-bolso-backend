@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { User } from "@prisma/client";
 import UserDto from "../../models/user/UserDto";
 import IUserRepository from "./interfaces/IUserRepository";

@@ -11,5 +11,5 @@ export default interface IUserRepository {
 
     Update(data: UserDto, id: string): Promise<User>;
 
-    Delete(id: string): Promise<"">;
+    Delete(id: string): Promise<void>;
 }

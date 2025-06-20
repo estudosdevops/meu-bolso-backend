@@ -9,7 +9,7 @@ export default interface IUserRepository {
 
     Create(data: UserDto): Promise<User>;
 
-    Update(data: UserDto): Promise<User>;
+    Update(data: UserDto, id: string): Promise<User>;
 
     Delete(id: string): Promise<"">;
 }

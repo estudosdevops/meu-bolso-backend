@@ -1,3 +1,5 @@
+import "reflect-metadata";
+import "./configs/injectionDepenciesRegister";
 import routes from "./routes";
 import express from "express";
 import cors from "cors";

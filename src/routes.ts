@@ -1,8 +1,8 @@
 import { Router } from "express";
-import helloWorld from "./controllers/hello_route";
+import userRoutes from "./routes/userRoutes";
 
 const routes = Router();
 
-routes.use("/hello", helloWorld);
+routes.use("/user", userRoutes);
 
 export default routes;

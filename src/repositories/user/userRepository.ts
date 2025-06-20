@@ -49,7 +49,7 @@ export default class UserRepository implements IUserRepository {
         throw new Error("Method not implemented.");
     }
 
-    async Update(data: UserDto): Promise<User> {
+    async Update(data: UserDto, id: string): Promise<User> {
         throw new Error("Method not implemented.");
     }
 

@@ -128,7 +128,10 @@ export default class ExpensesRepository implements IExpensesRepository {
                 id: expenseId,
                 userId,
             },
-            data,
+            data: {
+                ...data,
+                updatedAt: Date.now().toString(),
+            },
         });
 
         this._logger.info(

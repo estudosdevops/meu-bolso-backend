@@ -28,7 +28,7 @@ model User {
   active Boolean @default(true)
 
   bankingAccounts BankAccount[]
-  extract         Extract[]
+  transaction     Transaction[]
 
   expenses        Expense[]
   expenseCategory ExpenseCategory[]
@@ -46,7 +46,7 @@ model BankAccount {
   balance       Float
   active        Boolean @default(true)
 
-  extract Extract[]
+  transaction Transaction[]
 
   bank   Bank?  @relation(fields: [bankId], references: [id])
   bankId String @unique
@@ -60,12 +60,12 @@ model BankAccount {
   @@map("bankingAccounts")
 }
 
-model Extract {
-  id          String      @id @unique @default(uuid())
+model Transaction {
+  id          String          @id @unique @default(uuid())
   description String
   value       Float
   date        DateTime
-  type        ExtractType
+  type        TransactionType
 
   expense   Expense @relation(fields: [expenseId], references: [id])
   expenseId String
@@ -79,7 +79,7 @@ model Extract {
   createdAt DateTime  @default(now())
   updatedAt DateTime?
 
-  @@map("extracts")
+  @@map("transactions")
 }
 
 model Expense {
@@ -88,7 +88,7 @@ model Expense {
   value Float? // Value is optional when type is fixed 
   type  ExpenseType
 
-  extract Extract[]
+  transaction Transaction[]
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
@@ -132,7 +132,7 @@ enum ExpenseType {
   Variable
 }
 
-enum ExtractType {
+enum TransactionType {
   Entry
   Exit
 }

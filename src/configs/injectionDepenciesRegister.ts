@@ -9,6 +9,10 @@ import BankAccountRepository from "../repositories/bankAccount/BankAccountReposi
 import IBankRepository from "../repositories/bank/interfaces/IBankRepository";
 import BankRepository from "../repositories/bank/BankRepository";
 
+import IExpensesRepository from "../repositories/expenses/interfaces/IExpensesRepository";
+import ExpensesRepository from "../repositories/expenses/ExpensesRepository";
+
+// Repositories
 container
     .register<IUserRepository>("IUserRepository", {
         useClass: UserRepository,
@@ -18,4 +22,7 @@ container
     })
     .register<IBankRepository>("IBankRepository", {
         useClass: BankRepository,
+    })
+    .register<IExpensesRepository>("IExpensesRepository", {
+        useClass: ExpensesRepository,
     });

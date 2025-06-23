@@ -62,16 +62,16 @@ model BankAccount {
 
 model Transaction {
   id          String          @id @unique @default(uuid())
-  description String
+  description String?
   value       Float
   date        DateTime
   type        TransactionType
 
-  expense   Expense @relation(fields: [expenseId], references: [id])
-  expenseId String
+  expense   Expense? @relation(fields: [expenseId], references: [id])
+  expenseId String?
 
-  bank   BankAccount @relation(fields: [bankId], references: [id])
-  bankId String
+  bankAccount   BankAccount @relation(fields: [bankAccountId], references: [id])
+  bankAccountId String
 
   user   User   @relation(fields: [userId], references: [id])
   userId String

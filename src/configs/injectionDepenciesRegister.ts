@@ -15,6 +15,9 @@ import ExpensesRepository from "../repositories/expenses/ExpensesRepository";
 import IExpenseCategoryRepository from "../repositories/expenseCategory/interfaces/IExpenseCategoryRepository";
 import ExpenseCategoryRepository from "../repositories/expenseCategory/ExpenseCategoryRepository";
 
+import ITransactionRepository from "../repositories/transaction/interfaces/ITransactionRepository";
+import { TransactionRepository } from "../repositories/transaction/TransactionRepository";
+
 // Repositories
 container
     .register<IUserRepository>("IUserRepository", {
@@ -31,4 +34,7 @@ container
     })
     .register<IExpenseCategoryRepository>("IExpensesCategoryRepository", {
         useClass: ExpenseCategoryRepository,
+    })
+    .register<ITransactionRepository>("ITransactionRepository", {
+        useClass: TransactionRepository,
     });

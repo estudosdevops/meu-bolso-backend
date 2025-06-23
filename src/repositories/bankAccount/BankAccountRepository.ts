@@ -99,7 +99,7 @@ export default class BankAccountRepository implements IBankAccountRepository {
         });
 
         this._logger.info(
-            `[${this.METHOD_NAME}] Bank account created with successfully | BankAccountId: ${bankAccount.id}`,
+            `[${this.METHOD_NAME}] Bank account created with successfully | BankAccountId: ${bankAccount.id}, UserId: ${userId}`,
             {
                 method_name: this.METHOD_NAME,
                 bankAccountId: bankAccount.id,
@@ -114,11 +114,14 @@ export default class BankAccountRepository implements IBankAccountRepository {
         userId: string,
         data: BankAccountDto,
     ): Promise<BankAccount> {
-        this._logger.info(`[${this.METHOD_NAME}] Updating the bank account`, {
-            method_name: this.METHOD_NAME,
-            bankAccountId,
-            userId,
-        });
+        this._logger.info(
+            `[${this.METHOD_NAME}] Updating the bank account | BankAccountId: ${bankAccountId}, UserId: ${userId}`,
+            {
+                method_name: this.METHOD_NAME,
+                bankAccountId,
+                userId,
+            },
+        );
 
         const bankAccount = await this._prisma.bankAccount.update({
             where: {
@@ -133,7 +136,7 @@ export default class BankAccountRepository implements IBankAccountRepository {
         });
 
         this._logger.info(
-            `[${this.METHOD_NAME}] Bank Account infos updated with successfully`,
+            `[${this.METHOD_NAME}] Bank Account infos updated with successfully | UserId: ${userId}, BankAccountId: ${bankAccountId}`,
             {
                 method_name: this.METHOD_NAME,
                 bankAccountId,
@@ -145,10 +148,13 @@ export default class BankAccountRepository implements IBankAccountRepository {
     }
 
     async Delete(bankAccountId: string): Promise<void> {
-        this._logger.info(`[${this.METHOD_NAME}] Deleting the bank account`, {
-            method_name: this.METHOD_NAME,
-            bankAccountId,
-        });
+        this._logger.info(
+            `[${this.METHOD_NAME}] Deleting the bank account | BankAccountId: ${bankAccountId}`,
+            {
+                method_name: this.METHOD_NAME,
+                bankAccountId,
+            },
+        );
 
         await this._prisma.bankAccount.update({
             where: {
@@ -162,7 +168,7 @@ export default class BankAccountRepository implements IBankAccountRepository {
         });
 
         this._logger.info(
-            `[${this.METHOD_NAME}] Bank Account deleted | Bank Account ID: ${bankAccountId}`,
+            `[${this.METHOD_NAME}] Bank Account deleted with successfully`,
             {
                 method_name: this.METHOD_NAME,
                 bankAccountId,

@@ -39,7 +39,7 @@ export default class ExpensesRepository implements IExpensesRepository {
 
     async GetPerId(userId: string, expenseId: string): Promise<Expense> {
         this._logger.info(
-            `[${this.METHOD_NAME}] Getting expense | ExpenseId: ${expenseId} | UserId: ${userId}`,
+            `[${this.METHOD_NAME}] Getting expense | ExpenseId: ${expenseId}, UserId: ${userId}`,
             {
                 method_name: this.METHOD_NAME,
                 userId,
@@ -56,7 +56,7 @@ export default class ExpensesRepository implements IExpensesRepository {
 
         if (expense == null) {
             this._logger.info(
-                `[${this.METHOD_NAME}] Expense not found | ExpenseId: ${expenseId} | UserId: ${userId}`,
+                `[${this.METHOD_NAME}] Expense not found | ExpenseId: ${expenseId}, UserId: ${userId}`,
                 {
                     method_name: this.METHOD_NAME,
                     userId,
@@ -98,7 +98,7 @@ export default class ExpensesRepository implements IExpensesRepository {
         });
 
         this._logger.info(
-            `[${this.METHOD_NAME}] Expense created with successfully | ExpenseId: ${expense.id}`,
+            `[${this.METHOD_NAME}] Expense created with successfully | ExpenseId: ${expense.id}, UserId: ${userId}`,
             {
                 method_name: this.METHOD_NAME,
                 userId,
@@ -115,7 +115,7 @@ export default class ExpensesRepository implements IExpensesRepository {
         expenseId: string,
     ): Promise<Expense> {
         this._logger.info(
-            `[${this.METHOD_NAME}] Updating a expense | UserId: ${userId} | ExpenseId: ${expenseId}`,
+            `[${this.METHOD_NAME}] Updating a expense | UserId: ${userId} | ExpenseId: ${expenseId}, UserId: ${userId}`,
             {
                 method_name: this.METHOD_NAME,
                 userId,
@@ -135,7 +135,7 @@ export default class ExpensesRepository implements IExpensesRepository {
         });
 
         this._logger.info(
-            `[${this.METHOD_NAME}] Expense updated with successfully | ExpenseId: ${expenseId}`,
+            `[${this.METHOD_NAME}] Expense updated with successfully | ExpenseId: ${expenseId}, UserId: ${userId}`,
             {
                 method_name: this.METHOD_NAME,
                 userId,

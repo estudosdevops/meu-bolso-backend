@@ -80,10 +80,11 @@ export default class UserRepository implements IUserRepository {
         }
 
         this._logger.info(
-            `[${this.METHOD_NAME}] User founded with successfully | Email: ${email}`,
+            `[${this.METHOD_NAME}] User founded with successfully | Email: ${email}, UserId: ${user.id}`,
             {
                 method_name: this.METHOD_NAME,
                 userEmail: email,
+                userId: user.id,
             },
         );
 

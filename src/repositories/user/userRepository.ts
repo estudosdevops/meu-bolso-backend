@@ -158,7 +158,7 @@ export default class UserRepository implements IUserRepository {
         );
 
         await this._prisma.user.update({
-            where: { id },
+            where: { id, active: true },
             data: {
                 active: false,
                 updatedAt: Date.now().toString(),

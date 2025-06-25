@@ -38,7 +38,7 @@ export default class UserRepository implements IUserRepository {
             },
             data: {
                 ...data,
-                updatedAt: Date.now().toString(),
+                updatedAt: new Date(Date.now()),
             },
         });
     }
@@ -48,7 +48,7 @@ export default class UserRepository implements IUserRepository {
             where: { id, active: true },
             data: {
                 active: false,
-                updatedAt: Date.now().toString(),
+                updatedAt: new Date(Date.now()),
             },
         });
     }

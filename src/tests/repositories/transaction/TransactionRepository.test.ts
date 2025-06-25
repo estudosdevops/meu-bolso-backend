@@ -1,5 +1,3 @@
-import BaseException from "../../../models/bases/BaseException";
-import { HttpStatusCode } from "../../../models/enums/HttpStatusCode";
 import { TransactionType } from "@prisma/client";
 import { TransactionRepository } from "../../../repositories/transaction/TransactionRepository";
 import { prismaMock } from "../../setup/setupPrisma";
@@ -121,18 +119,12 @@ describe("Success TransactionRepository methods", () => {
 
 describe("Throw TransactionRepository methods", () => {
     const transactionRepository = new TransactionRepository();
-    const TRANSACTION_NOT_FOUND_MESSAGE = "Transaction not found";
 
     test("should throw a BaseException when transaction not found", async () => {
         prismaMock.transaction.findUnique.mockResolvedValue(null);
 
         await expect(
             transactionRepository.GetPerId("user-123", "trans-123"),
-        ).rejects.toEqual(
-            new BaseException(
-                TRANSACTION_NOT_FOUND_MESSAGE,
-                HttpStatusCode.NOT_FOUND,
-            ),
-        );
+        ).resolves.toBeNull();
     });
 });

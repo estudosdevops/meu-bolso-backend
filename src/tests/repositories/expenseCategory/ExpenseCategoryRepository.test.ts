@@ -1,5 +1,3 @@
-import BaseException from "../../../models/bases/BaseException";
-import { HttpStatusCode } from "../../../models/enums/HttpStatusCode";
 import ExpenseCategoryRepository from "../../../repositories/expenseCategory/ExpenseCategoryRepository";
 import { prismaMock } from "../../setup/setupPrisma";
 
@@ -95,18 +93,12 @@ describe("Success ExpenseCategoryRepository methods", () => {
 
 describe("Throw ExpenseCategoryRepository methods", () => {
     const expenseCategoryRepository = new ExpenseCategoryRepository();
-    const CATEGORY_NOT_FOUND_MESSAGE = "Expense category not found";
 
     test("should throw a BaseException when expense category not found", async () => {
         prismaMock.expenseCategory.findUnique.mockResolvedValue(null);
 
         await expect(
             expenseCategoryRepository.GetPerId("user-123", "cat-123"),
-        ).rejects.toEqual(
-            new BaseException(
-                CATEGORY_NOT_FOUND_MESSAGE,
-                HttpStatusCode.NOT_FOUND,
-            ),
-        );
+        ).resolves.toBeNull();
     });
 });

@@ -4,6 +4,8 @@ import IUserRepository from "../../repositories/user/interfaces/IUserRepository"
 import { inject, injectable } from "tsyringe";
 import logger from "../../configs/logger/logger";
 import UserDto from "../../models/user/UserDto";
+import BaseException from "../../models/bases/BaseException";
+import { HttpStatusCode } from "../../models/enums/HttpStatusCode";
 
 @injectable()
 export default class UserService implements IUserService {
@@ -27,6 +29,18 @@ export default class UserService implements IUserService {
 
         const user = await this._userRepository.GetPerId(id);
 
+        if (user == null) {
+            this._logger.info(
+                `[${this.METHOD_NAME}] User not found | UserId: ${id}`,
+                {
+                    method_name: this.METHOD_NAME,
+                    userId: id,
+                },
+            );
+
+            throw new BaseException("User not found", HttpStatusCode.NOT_FOUND);
+        }
+
         this._logger.info(
             `[${this.METHOD_NAME}] User founded with successfully | UserId: ${id}`,
             {
@@ -39,18 +53,123 @@ export default class UserService implements IUserService {
     }
 
     async GetPerMail(email: string): Promise<User> {
-        return await this._userRepository.GetPerMail(email);
+        this._logger.info(
+            `[${this.METHOD_NAME}] Getting user information per email | Email: ${email}`,
+            {
+                method_name: this.METHOD_NAME,
+                userEmail: email,
+            },
+        );
+
+        const user = await this._userRepository.GetPerMail(email);
+
+        if (user == null) {
+            this._logger.info(
+                `[${this.METHOD_NAME}] User not found | Email: ${email}`,
+                {
+                    method_name: this.METHOD_NAME,
+                    userEmail: email,
+                },
+            );
+
+            throw new BaseException("User not found", HttpStatusCode.NOT_FOUND);
+        }
+
+        this._logger.info(
+            `[${this.METHOD_NAME}] User founded with successfully | Email: ${email}, UserId: ${user.id}`,
+            {
+                method_name: this.METHOD_NAME,
+                userEmail: email,
+                userId: user.id,
+            },
+        );
+
+        return user;
     }
 
     async Create(data: UserDto): Promise<User> {
-        throw new Error("Method not implemented.");
+        this._logger.info(
+            `[${this.METHOD_NAME}] Creating a new user | User email: ${data.email}`,
+            {
+                method_name: this.METHOD_NAME,
+                userEmail: data.email,
+            },
+        );
+
+        const user = await this._userRepository.Create(data);
+
+        this._logger.info(
+            `[${this.METHOD_NAME}] User created with successfully | User ID: ${user.id} | User email: ${user.email}`,
+            {
+                method_name: this.METHOD_NAME,
+                userId: user.id,
+                userEmail: user.email,
+            },
+        );
+
+        return user;
     }
 
     async Update(data: UserDto, id: string): Promise<User> {
-        throw new Error("Method not implemented.");
+        this._logger.info(
+            `[${this.METHOD_NAME}] Updating user informations | User ID: ${id}`,
+            {
+                method_name: this.METHOD_NAME,
+                userId: id,
+            },
+        );
+
+        await this.HasUserInDatabase(id);
+
+        const user = await this._userRepository.Update(data, id);
+
+        this._logger.info(
+            `[${this.METHOD_NAME}] User updated with successfully | User ID: ${user.id} | User email: ${user.email}`,
+            {
+                method_name: this.METHOD_NAME,
+                userId: user.id,
+                userEmail: user.email,
+            },
+        );
+
+        return user;
     }
 
     async Delete(id: string): Promise<void> {
-        throw new Error("Method not implemented.");
+        this._logger.info(
+            `[${this.METHOD_NAME}] Deleting user | User ID: ${id}`,
+            {
+                method_name: this.METHOD_NAME,
+                userId: id,
+            },
+        );
+
+        await this.HasUserInDatabase(id);
+
+        await this._userRepository.Delete(id);
+
+        this._logger.info(
+            `[${this.METHOD_NAME}] User deleted | User ID: ${id}`,
+            {
+                method_name: this.METHOD_NAME,
+                userId: id,
+            },
+        );
+    }
+
+    private async HasUserInDatabase(id: string): Promise<void> {
+        const user = await this._userRepository.GetPerId(id);
+
+        if (user == null) {
+            this._logger.info(
+                `[${this.METHOD_NAME}] User not found | UserId: ${id}`,
+                {
+                    method_name: this.METHOD_NAME,
+                    userId: id,
+                },
+            );
+
+            throw new BaseException("User not found", HttpStatusCode.NOT_FOUND);
+        }
     }
 }

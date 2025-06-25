@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { HttpStatusCode } from "../enums/HttpStatusCode";
+import { HttpStatusCode } from "../models/enums/HttpStatusCode";
 
 import BaseException from "../models/bases/BaseException";
 import BaseResponse from "../models/bases/BaseResponse";

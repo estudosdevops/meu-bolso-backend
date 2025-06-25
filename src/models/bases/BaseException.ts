@@ -1,15 +1,15 @@
-import { HttpStatusCode } from "../../enums/HttpStatusCode";
+import { HttpStatusCode } from "../enums/HttpStatusCode";
 
 export default class BaseException extends Error {
-  public readonly statusCode?: HttpStatusCode;
-  public readonly error?: unknown;
+    public readonly statusCode?: HttpStatusCode;
+    public readonly error?: unknown;
 
-  constructor(message: string, statusCode?: HttpStatusCode, error?: unknown) {
-    super(message);
-    this.statusCode = statusCode;
+    constructor(message: string, statusCode?: HttpStatusCode, error?: unknown) {
+        super(message);
+        this.statusCode = statusCode;
 
-    if (error instanceof Error) {
-      this.message = error.message;
+        if (error instanceof Error) {
+            this.message = error.message;
+        }
     }
-  }
 }

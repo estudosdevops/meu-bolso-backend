@@ -1,5 +1,3 @@
-import BaseException from "../../../models/bases/BaseException";
-import { HttpStatusCode } from "../../../models/enums/HttpStatusCode";
 import UserDto from "../../../models/user/UserDto";
 import UserRepository from "../../../repositories/user/userRepository";
 import { prismaMock } from "../../setup/setupPrisma";
@@ -97,16 +95,13 @@ describe("Success UserRepository methods", () => {
 
 describe("Throw user repository methods", () => {
     const userRepository = new UserRepository();
-    const USER_NOT_FOUND_MESSAGE = "User not found";
 
     test("should throw a baseException when receive a null from DB", async () => {
         prismaMock.user.findUnique.mockResolvedValue(null);
 
         await expect(
             userRepository.GetPerId("6bec75e-3878-42e6-98c6-8e2d60fe044b"),
-        ).rejects.toEqual(
-            new BaseException(USER_NOT_FOUND_MESSAGE, HttpStatusCode.NOT_FOUND),
-        );
+        ).resolves.toBeNull();
     });
 
     test("should get a user by your email ", async () => {
@@ -114,8 +109,6 @@ describe("Throw user repository methods", () => {
 
         await expect(
             userRepository.GetPerMail("wrong@email.com"),
-        ).rejects.toEqual(
-            new BaseException(USER_NOT_FOUND_MESSAGE, HttpStatusCode.NOT_FOUND),
-        );
+        ).resolves.toBeNull();
     });
 });

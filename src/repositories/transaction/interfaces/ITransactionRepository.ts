@@ -4,7 +4,10 @@ import TransactionDto from "../../../models/transaction/TransactioDto";
 export default interface ITransactionRepository {
     GetAll(userId: string): Promise<Transaction[]>;
 
-    GetPerId(userId: string, transactionId: string): Promise<Transaction>;
+    GetPerId(
+        userId: string,
+        transactionId: string,
+    ): Promise<Transaction | null>;
 
     Create(data: TransactionDto): Promise<Transaction>;
 

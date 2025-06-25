@@ -1,5 +1,3 @@
-import BaseException from "../../../models/bases/BaseException";
-import { HttpStatusCode } from "../../../models/enums/HttpStatusCode";
 import BankRepository from "../../../repositories/bank/BankRepository";
 import { prismaMock } from "../../setup/setupPrisma";
 import BankDto from "../../../models/bank/bankDto";
@@ -76,13 +74,10 @@ describe("Success BankRepository methods", () => {
 
 describe("Throw BankRepository methods", () => {
     const bankRepository = new BankRepository();
-    const BANK_NOT_FOUND_MESSAGE = "Bank not founded";
 
     test("should throw a BaseException when bank not found", async () => {
         prismaMock.bank.findUnique.mockResolvedValue(null);
 
-        await expect(bankRepository.GetPerId("bank-123")).rejects.toEqual(
-            new BaseException(BANK_NOT_FOUND_MESSAGE, HttpStatusCode.NOT_FOUND),
-        );
+        await expect(bankRepository.GetPerId("bank-123")).resolves.toBeNull();
     });
 });

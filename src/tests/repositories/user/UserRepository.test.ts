@@ -1,4 +1,3 @@
-import UserDto from "../../../models/user/UserDto";
 import UserRepository from "../../../repositories/user/userRepository";
 import { prismaMock } from "../../setup/setupPrisma";
 
@@ -28,11 +27,11 @@ describe("Success UserRepository methods", () => {
     test("should create new user ", async () => {
         prismaMock.user.create.mockResolvedValue(userPrismaMock);
 
-        const userMock = new UserDto(
-            "Jane Doe",
-            "jane@email.com",
-            "01234567890",
-        );
+        const userMock = {
+            name: "Jane Doe",
+            email: "jane@email.com",
+            cpf: "01234567890",
+        };
 
         const userCreated = await userRepository.Create(userMock);
 
@@ -65,11 +64,11 @@ describe("Success UserRepository methods", () => {
 
         prismaMock.user.update.mockResolvedValue(userPrismaMockUpdated);
 
-        const userDtoUpdated = new UserDto(
-            userPrismaMockUpdated.name,
-            userPrismaMockUpdated.email,
-            userPrismaMockUpdated.cpf,
-        );
+        const userDtoUpdated = {
+            name: userPrismaMockUpdated.name,
+            email: userPrismaMockUpdated.email,
+            cpf: userPrismaMockUpdated.cpf,
+        };
 
         const user = await userRepository.Update(
             userDtoUpdated,

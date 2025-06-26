@@ -142,6 +142,7 @@ const config: Config = {
     setupFilesAfterEnv: [
         "<rootDir>/tests/setup/setupPrisma.ts",
         "<rootDir>/tests/setup/setupLogger.ts",
+        "<rootDir>/tests/setup/setupReflectMetadata.ts",
     ],
 
     // The number of seconds after which a test is considered as slow and reported as such in the results.

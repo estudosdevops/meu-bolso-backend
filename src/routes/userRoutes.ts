@@ -2,6 +2,8 @@ import { Request, Response, Router } from "express";
 
 import { container } from "tsyringe";
 import UserController from "../controllers/UserController";
+import { validationMiddleware } from "../middlewares/validationRequestMiddleware";
+import UserDto from "../models/user/UserDto";
 
 const router = Router();
 
@@ -15,12 +17,14 @@ router.get("/:email", (req: Request, res: Response) =>
     userController.GetUserPerEmail(req, res),
 );
 
-router.post("", (req: Request, res: Response) =>
+router.post("", validationMiddleware(UserDto), (req: Request, res: Response) =>
     userController.CreateNewUser(req, res),
 );
 
-router.put("/:id", (req: Request, res: Response) =>
-    userController.UpdateUser(req, res),
+router.put(
+    "/:id",
+    validationMiddleware(UserDto),
+    (req: Request, res: Response) => userController.UpdateUser(req, res),
 );
 
 router.delete("/:id", (req: Request, res: Response) =>

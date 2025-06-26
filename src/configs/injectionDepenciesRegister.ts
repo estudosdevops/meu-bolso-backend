@@ -20,21 +20,24 @@ import { TransactionRepository } from "../repositories/transaction/TransactionRe
 
 // Repositories
 container
-    .register<IUserRepository>("IUserRepository", {
-        useClass: UserRepository,
-    })
-    .register<IBankAccountRepository>("IBankAccountRepository", {
-        useClass: BankAccountRepository,
-    })
-    .register<IBankRepository>("IBankRepository", {
-        useClass: BankRepository,
-    })
-    .register<IExpensesRepository>("IExpensesRepository", {
-        useClass: ExpensesRepository,
-    })
-    .register<IExpenseCategoryRepository>("IExpensesCategoryRepository", {
-        useClass: ExpenseCategoryRepository,
-    })
-    .register<ITransactionRepository>("ITransactionRepository", {
-        useClass: TransactionRepository,
-    });
+    .register<IUserRepository>("IUserRepository", UserRepository)
+    .register<IBankAccountRepository>(
+        "IBankAccountRepository",
+        BankAccountRepository,
+    )
+    .register<IBankRepository>("IBankRepository", BankRepository)
+    .register<IExpensesRepository>("IExpensesRepository", ExpensesRepository)
+    .register<IExpenseCategoryRepository>(
+        "IExpensesCategoryRepository",
+        ExpenseCategoryRepository,
+    )
+    .register<ITransactionRepository>(
+        "ITransactionRepository",
+        TransactionRepository,
+    );
+
+// Services
+import UserService from "../services/user/UserService";
+import IUserService from "../services/user/interfaces/IUserService";
+
+container.register<IUserService>("IUserService", UserService);

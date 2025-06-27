@@ -40,4 +40,9 @@ container
 import UserService from "../services/user/UserService";
 import IUserService from "../services/user/interfaces/IUserService";
 
-container.register<IUserService>("IUserService", UserService);
+import IAuthService from "../services/auth/interfaces/IAuthService";
+import AuthService from "../services/auth/AuthService";
+
+container
+    .register<IUserService>("IUserService", UserService)
+    .register<IAuthService>("IAuthService", AuthService);

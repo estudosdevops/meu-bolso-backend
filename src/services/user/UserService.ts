@@ -6,6 +6,7 @@ import logger from "../../configs/logger/logger";
 import UserDto from "../../models/user/UserDto";
 import BaseException from "../../models/bases/BaseException";
 import { HttpStatusCode } from "../../models/enums/HttpStatusCode";
+import { encryptText } from "../../handlers/encryptText";
 
 @injectable()
 export default class UserService implements IUserService {
@@ -95,6 +96,10 @@ export default class UserService implements IUserService {
                 userEmail: data.email,
             },
         );
+
+        const passwordEncrypted = await encryptText(data.password);
+
+        data.password = passwordEncrypted;
 
         const user = await this._userRepository.Create(data);
 

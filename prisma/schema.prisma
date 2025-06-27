@@ -21,11 +21,12 @@ datasource db {
 }
 
 model User {
-  id     String  @id @unique @default(uuid())
-  name   String
-  email  String  @unique
-  cpf    String  @unique
-  active Boolean @default(true)
+  id       String  @id @unique @default(uuid())
+  name     String
+  email    String  @unique
+  password String
+  cpf      String  @unique
+  active   Boolean @default(true)
 
   bankingAccounts BankAccount[]
   transaction     Transaction[]

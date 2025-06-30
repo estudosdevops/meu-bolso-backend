@@ -1,7 +1,6 @@
 import { Authentication } from "@prisma/client";
 import IAuthRepository from "./interfaces/IAuthRepository";
 import prisma from "../../configs/db/prisma";
-import { encryptText } from "../../handlers/encryptText";
 
 export default class AuthRepository implements IAuthRepository {
     private readonly _prisma = prisma;
@@ -13,12 +12,10 @@ export default class AuthRepository implements IAuthRepository {
     }
 
     async Create(password: string, userId: string): Promise<Authentication> {
-        const passwordEncrypted = await encryptText(password);
-
         return await this._prisma.authentication.create({
             data: {
-                password: passwordEncrypted,
-                userId: userId,
+                password,
+                userId,
             },
         });
     }

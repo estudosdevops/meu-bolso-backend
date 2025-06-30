@@ -9,16 +9,22 @@ import IAuthService from "./interfaces/IAuthService";
 import IUserRepository from "../../repositories/user/interfaces/IUserRepository";
 import logger from "../../configs/logger/logger";
 import BaseException from "../../models/bases/BaseException";
-import { User } from "@prisma/client";
+import { Authentication, User } from "@prisma/client";
 import secrets from "../../configs/secrets";
 import { jwtPayload } from "../../types/jwtPayload";
+import IAuthRepository from "../../repositories/auth/interfaces/IAuthRepository";
 
 @injectable()
 export default class AuthService implements IAuthService {
     constructor(
         @inject("IUserRepository")
         private readonly _userRepository: IUserRepository,
+
+        @inject("IAuthRepository")
+        private readonly _authRepository: IAuthRepository,
     ) {}
+
+    private readonly RANDOM_NUMBER = 64;
 
     private readonly _logger = logger;
 
@@ -28,7 +34,7 @@ export default class AuthService implements IAuthService {
         const user = await this._userRepository.GetPerMail(email);
 
         if (user == null) {
-            this._logger.info(
+            this._logger.warn(
                 `[${this.METHOD_NAME}] ${USER_NOT_FOUND_MESSAGE} | Email: ${email}`,
                 {
                     method_name: this.METHOD_NAME,
@@ -42,13 +48,31 @@ export default class AuthService implements IAuthService {
             );
         }
 
+        const auth = await this._authRepository.GetPerUserId(user.id);
+
+        if (auth == undefined) {
+            this._logger.warn(
+                `[${this.METHOD_NAME}] Auth table to user not exists | UserId: ${user.id}`,
+                {
+                    method_name: this.METHOD_NAME,
+                    userEmail: email,
+                    userId: user.id,
+                },
+            );
+
+            throw new BaseException(
+                "Auth table to user not exists",
+                HttpStatusCode.NOT_FOUND,
+            );
+        }
+
         const hasCorrectPassword = await compareTextWithHash(
             password,
-            user.password,
+            auth.password,
         );
 
         if (!hasCorrectPassword) {
-            this._logger.info(
+            this._logger.warn(
                 `[${this.METHOD_NAME}] User password is incorrect | Email: ${email}`,
                 {
                     method_name: this.METHOD_NAME,
@@ -62,11 +86,14 @@ export default class AuthService implements IAuthService {
             );
         }
 
-        return await this.GenerateToken(user);
+        return await this.GenerateToken(auth, user);
     }
 
     // Private methods
-    private async GenerateToken(user: User): Promise<AuthResponse> {
+    private async GenerateToken(
+        auth: Authentication,
+        user: User,
+    ): Promise<AuthResponse> {
         const payload: jwtPayload = {
             id: user.id,
             name: user.name,
@@ -76,7 +103,17 @@ export default class AuthService implements IAuthService {
             expiresIn: secrets.jwt.expiresIn,
         });
 
-        return new AuthResponse(token, this.random(64), secrets.jwt.expiresIn);
+        const refreshToken = await this._authRepository.UpdateRefreshToken(
+            auth.id,
+            user.id,
+            this.random(this.RANDOM_NUMBER),
+        );
+
+        return new AuthResponse(
+            token,
+            refreshToken.refreshToken ?? "",
+            secrets.jwt.expiresIn,
+        );
     }
 
     private async RefreshToken(

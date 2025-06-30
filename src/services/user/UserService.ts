@@ -1,18 +1,24 @@
 import { User } from "@prisma/client";
-import IUserService from "./interfaces/IUserService";
-import IUserRepository from "../../repositories/user/interfaces/IUserRepository";
+import { encryptText } from "../../handlers/encryptText";
+import { HttpStatusCode } from "../../models/enums/HttpStatusCode";
 import { inject, injectable } from "tsyringe";
+
 import logger from "../../configs/logger/logger";
 import UserDto from "../../models/user/UserDto";
 import BaseException from "../../models/bases/BaseException";
-import { HttpStatusCode } from "../../models/enums/HttpStatusCode";
-import { encryptText } from "../../handlers/encryptText";
+
+import IAuthRepository from "../../repositories/auth/interfaces/IAuthRepository";
+import IUserService from "./interfaces/IUserService";
+import IUserRepository from "../../repositories/user/interfaces/IUserRepository";
 
 @injectable()
 export default class UserService implements IUserService {
     constructor(
         @inject("IUserRepository")
         private readonly _userRepository: IUserRepository,
+
+        @inject("IAuthRepository")
+        private readonly _authRepository: IAuthRepository,
     ) {}
 
     private readonly _logger = logger;
@@ -97,11 +103,9 @@ export default class UserService implements IUserService {
             },
         );
 
-        const passwordEncrypted = await encryptText(data.password);
-
-        data.password = passwordEncrypted;
-
         const user = await this._userRepository.Create(data);
+
+        await this.CreateAuthUserRelation(user.id, data.password);
 
         this._logger.info(
             `[${this.METHOD_NAME}] User created with successfully | User ID: ${user.id} | User email: ${user.email}`,
@@ -162,6 +166,8 @@ export default class UserService implements IUserService {
         );
     }
 
+    // Private methods
+
     private async HasUserInDatabase(id: string): Promise<void> {
         const user = await this._userRepository.GetPerId(id);
 
@@ -176,5 +182,34 @@ export default class UserService implements IUserService {
 
             throw new BaseException("User not found", HttpStatusCode.NOT_FOUND);
         }
+    }
+
+    private async CreateAuthUserRelation(
+        userId: string,
+        password: string,
+    ): Promise<void> {
+        this._logger.info(
+            `[${this.METHOD_NAME}] Creating the auth relation | UserId: ${userId}`,
+            {
+                method_name: this.METHOD_NAME,
+                userId,
+            },
+        );
+
+        const passwordEncrypted = await encryptText(password);
+
+        const auth = await this._authRepository.Create(
+            passwordEncrypted,
+            userId,
+        );
+
+        this._logger.info(
+            `[${this.METHOD_NAME}] Created the auth relation with success | UserId: ${userId} | AuthId: ${auth.id}`,
+            {
+                method_name: this.METHOD_NAME,
+                userId,
+                authId: auth.id,
+            },
+        );
     }
 }

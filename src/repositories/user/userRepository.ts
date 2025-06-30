@@ -26,7 +26,11 @@ export default class UserRepository implements IUserRepository {
 
     async Create(data: UserDto): Promise<User> {
         return await this._prisma.user.create({
-            data,
+            data: {
+                name: data.name,
+                cpf: data.cpf,
+                email: data.email,
+            },
         });
     }
 

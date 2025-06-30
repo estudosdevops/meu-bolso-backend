@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import { HttpStatusCode } from "../../models/enums/HttpStatusCode";
 import { USER_NOT_FOUND_MESSAGE } from "../../models/utils/Constants";
-import { compareTextWithHash, encryptText } from "../../handlers/encryptText";
+import { compareTextWithHash } from "../../handlers/encryptText";
 import { sign } from "jsonwebtoken";
 
 import AuthResponse from "../../models/auth/AuthResponse";
@@ -11,6 +11,7 @@ import logger from "../../configs/logger/logger";
 import BaseException from "../../models/bases/BaseException";
 import { User } from "@prisma/client";
 import secrets from "../../configs/secrets";
+import { jwtPayload } from "../../types/jwtPayload";
 
 @injectable()
 export default class AuthService implements IAuthService {
@@ -66,8 +67,8 @@ export default class AuthService implements IAuthService {
 
     // Private methods
     private async GenerateToken(user: User): Promise<AuthResponse> {
-        const payload = {
-            id: encryptText(user.id),
+        const payload: jwtPayload = {
+            id: user.id,
             name: user.name,
         };
 
@@ -75,7 +76,7 @@ export default class AuthService implements IAuthService {
             expiresIn: secrets.jwt.expiresIn,
         });
 
-        return new AuthResponse(token, this.random(64), 10);
+        return new AuthResponse(token, this.random(64), secrets.jwt.expiresIn);
     }
 
     private async RefreshToken(

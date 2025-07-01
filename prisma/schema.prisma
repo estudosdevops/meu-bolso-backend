@@ -27,6 +27,9 @@ model Authentication {
 
   user   User   @relation(fields: [userId], references: [id])
   userId String @unique
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
 }
 
 model User {

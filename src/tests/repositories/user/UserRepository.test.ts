@@ -31,6 +31,7 @@ describe("Success UserRepository methods", () => {
             name: "Jane Doe",
             email: "jane@email.com",
             cpf: "01234567890",
+            password: "strongPass!@",
         };
 
         const userCreated = await userRepository.Create(userMock);
@@ -68,6 +69,7 @@ describe("Success UserRepository methods", () => {
             name: userPrismaMockUpdated.name,
             email: userPrismaMockUpdated.email,
             cpf: userPrismaMockUpdated.cpf,
+            password: "strongPass!@",
         };
 
         const user = await userRepository.Update(

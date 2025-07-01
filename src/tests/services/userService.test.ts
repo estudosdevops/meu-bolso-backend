@@ -1,5 +1,6 @@
 import BaseException from "../../models/bases/BaseException";
 import { HttpStatusCode } from "../../models/enums/HttpStatusCode";
+import IAuthRepository from "../../repositories/auth/interfaces/IAuthRepository";
 import IUserRepository from "../../repositories/user/interfaces/IUserRepository";
 import UserService from "../../services/user/UserService";
 
@@ -17,6 +18,7 @@ const USER_NOT_FOUND_MESSAGE = "User not found";
 
 describe("Tests involved the Get methods", () => {
     let mockUserRepository: jest.Mocked<IUserRepository>;
+    let mockAuthRepository: jest.Mocked<IAuthRepository>;
     let userService: UserService;
 
     beforeEach(() => {
@@ -28,7 +30,13 @@ describe("Tests involved the Get methods", () => {
             Delete: jest.fn(),
         };
 
-        userService = new UserService(mockUserRepository);
+        mockAuthRepository = {
+            Create: jest.fn(),
+            GetPerUserId: jest.fn(),
+            UpdateRefreshToken: jest.fn(),
+        };
+
+        userService = new UserService(mockUserRepository, mockAuthRepository);
     });
 
     test("Should receive a User when get user from userRepository.GetPerId", async () => {
@@ -90,6 +98,8 @@ describe("Tests involved the Get methods", () => {
 
 describe("Tests involved the create method", () => {
     let mockUserRepository: jest.Mocked<IUserRepository>;
+    let mockAuthRepository: jest.Mocked<IAuthRepository>;
+
     let userService: UserService;
 
     beforeEach(() => {
@@ -101,7 +111,13 @@ describe("Tests involved the create method", () => {
             Delete: jest.fn(),
         };
 
-        userService = new UserService(mockUserRepository);
+        mockAuthRepository = {
+            Create: jest.fn(),
+            GetPerUserId: jest.fn(),
+            UpdateRefreshToken: jest.fn(),
+        };
+
+        userService = new UserService(mockUserRepository, mockAuthRepository);
     });
 
     test("Should create a new user and returned him", async () => {
@@ -115,11 +131,22 @@ describe("Tests involved the create method", () => {
             updatedAt: null,
         };
 
+        const authPrismaMock = {
+            id: "e2cfd178-cc6c-4d79-8c56-58cd80f57854",
+            password: "strongPasswordEncrypted",
+            refreshToken: null,
+            createdAt: new Date(),
+            updatedAt: null,
+            userId: "b6bec75e-3878-42e6-98c6-8e2d60fe044b",
+        };
+
+        mockAuthRepository.Create.mockResolvedValue(authPrismaMock);
         mockUserRepository.Create.mockResolvedValue(userPrismaMock);
 
         const userMock = {
             name: "Jane Doe",
             email: "jane@email.com",
+            password: "strongPassword",
             cpf: "01234567890",
         };
 
@@ -131,6 +158,7 @@ describe("Tests involved the create method", () => {
 
 describe("Tests involved the update method", () => {
     let mockUserRepository: jest.Mocked<IUserRepository>;
+    let mockAuthRepository: jest.Mocked<IAuthRepository>;
     let userService: UserService;
 
     beforeEach(() => {
@@ -142,7 +170,13 @@ describe("Tests involved the update method", () => {
             Delete: jest.fn(),
         };
 
-        userService = new UserService(mockUserRepository);
+        mockAuthRepository = {
+            Create: jest.fn(),
+            GetPerUserId: jest.fn(),
+            UpdateRefreshToken: jest.fn(),
+        };
+
+        userService = new UserService(mockUserRepository, mockAuthRepository);
     });
 
     test("Should update a existing user and returned him updated", async () => {
@@ -167,6 +201,7 @@ describe("Tests involved the update method", () => {
         const userMockUpdated = {
             name: userPrismaMockUpdated.name,
             email: userPrismaMockUpdated.email,
+            password: "strongPassword!@",
             cpf: userPrismaMockUpdated.cpf,
         };
 
@@ -190,7 +225,10 @@ describe("Tests involved the update method", () => {
             updatedAt: null,
         };
 
-        const userPrismaMockUpdated = { ...userPrismaMock };
+        const userPrismaMockUpdated = {
+            ...userPrismaMock,
+            password: "strongPassword",
+        };
 
         userPrismaMockUpdated.email = "janedoe@email.com";
         userPrismaMockUpdated.updatedAt = new Date();
@@ -205,6 +243,7 @@ describe("Tests involved the update method", () => {
 
 describe("Tests involved the delete method", () => {
     let mockUserRepository: jest.Mocked<IUserRepository>;
+    let mockAuthRepository: jest.Mocked<IAuthRepository>;
     let userService: UserService;
 
     beforeEach(() => {
@@ -216,7 +255,13 @@ describe("Tests involved the delete method", () => {
             Delete: jest.fn(),
         };
 
-        userService = new UserService(mockUserRepository);
+        mockAuthRepository = {
+            Create: jest.fn(),
+            GetPerUserId: jest.fn(),
+            UpdateRefreshToken: jest.fn(),
+        };
+
+        userService = new UserService(mockUserRepository, mockAuthRepository);
     });
 
     test("Should not return a throw when delete user", async () => {

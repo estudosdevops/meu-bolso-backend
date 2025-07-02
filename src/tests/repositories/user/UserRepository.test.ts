@@ -69,7 +69,6 @@ describe("Success UserRepository methods", () => {
             name: userPrismaMockUpdated.name,
             email: userPrismaMockUpdated.email,
             cpf: userPrismaMockUpdated.cpf,
-            password: "strongPass!@",
         };
 
         const user = await userRepository.Update(

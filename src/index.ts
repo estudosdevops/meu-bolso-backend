@@ -1,13 +1,14 @@
 import "reflect-metadata";
 import "./configs/injectionDepenciesRegister";
+import secrets from "./configs/secrets";
+
 import routes from "./routes";
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
+
 import errorHandlerMiddleware from "./middlewares/ErrorHandlerMiddleware";
 import httpResponseMiddleware from "./middlewares/HttpResponseMiddleware";
-
-dotenv.config();
+import authHandlerMiddleware from "./middlewares/AuthHandlerMiddleware";
 
 const app = express();
 
@@ -16,8 +17,10 @@ app.use(cors());
 
 app.use(httpResponseMiddleware);
 
+app.use(authHandlerMiddleware);
+
 app.use(routes);
 
 app.use(errorHandlerMiddleware);
 
-app.listen(process.env.PORT || 3000);
+app.listen(secrets.applicatioPort);

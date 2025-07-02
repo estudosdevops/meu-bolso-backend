@@ -18,6 +18,9 @@ import ExpenseCategoryRepository from "../repositories/expenseCategory/ExpenseCa
 import ITransactionRepository from "../repositories/transaction/interfaces/ITransactionRepository";
 import { TransactionRepository } from "../repositories/transaction/TransactionRepository";
 
+import AuthRepository from "../repositories/auth/AuthRepository";
+import IAuthRepository from "../repositories/auth/interfaces/IAuthRepository";
+
 // Repositories
 container
     .register<IUserRepository>("IUserRepository", UserRepository)
@@ -34,10 +37,16 @@ container
     .register<ITransactionRepository>(
         "ITransactionRepository",
         TransactionRepository,
-    );
+    )
+    .register<IAuthRepository>("IAuthRepository", AuthRepository);
 
 // Services
 import UserService from "../services/user/UserService";
 import IUserService from "../services/user/interfaces/IUserService";
 
-container.register<IUserService>("IUserService", UserService);
+import IAuthService from "../services/auth/interfaces/IAuthService";
+import AuthService from "../services/auth/AuthService";
+
+container
+    .register<IUserService>("IUserService", UserService)
+    .register<IAuthService>("IAuthService", AuthService);

@@ -20,12 +20,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Authentication {
+  id           String  @id @unique @default(uuid())
+  password     String  @db.VarChar(255)
+  refreshToken String?
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+}
+
 model User {
   id     String  @id @unique @default(uuid())
   name   String
   email  String  @unique
   cpf    String  @unique
   active Boolean @default(true)
+
+  auth Authentication?
 
   bankingAccounts BankAccount[]
   transaction     Transaction[]

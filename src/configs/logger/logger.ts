@@ -1,14 +1,12 @@
 import winston, { format } from "winston";
 import LokiTransport from "winston-loki";
-import dotenv from "dotenv";
-
-dotenv.config();
+import secrets from "../secrets";
 
 const lokiOptions = {
-    host: process.env.LOKI_HOST || "http://localhost:3100",
+    host: secrets.lokiHost || "http://localhost:3100",
     json: true,
     labels: {
-        app: process.env.APP_NAME || "finance-system",
+        app: secrets.applicationName || "finance-system",
     },
     format: format.json(),
     replaceTimestamp: true,

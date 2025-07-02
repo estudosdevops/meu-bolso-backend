@@ -86,9 +86,7 @@ export default class AuthService implements IAuthService {
             );
         }
 
-        const authToken = await this.GenerateToken(auth, user);
-
-        return authToken;
+        return await this.GenerateToken(auth, user);
     }
 
     async Refresh(refreshToken: string, userId: string): Promise<AuthResponse> {

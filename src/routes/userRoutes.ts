@@ -14,7 +14,7 @@ router.get("/:id", (req: Request, res: Response) =>
     userController.GetUserPerId(req, res),
 );
 
-router.get("/:email", (req: Request, res: Response) =>
+router.get("/email/:email", (req: Request, res: Response) =>
     userController.GetUserPerEmail(req, res),
 );
 

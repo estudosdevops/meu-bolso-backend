@@ -86,6 +86,61 @@ export default class AuthService implements IAuthService {
             );
         }
 
+        const authToken = await this.GenerateToken(auth, user);
+
+        return authToken;
+    }
+
+    async Refresh(refreshToken: string, userId: string): Promise<AuthResponse> {
+        const user = await this._userRepository.GetPerId(userId);
+
+        if (user == null) {
+            this._logger.warn(
+                `[${this.METHOD_NAME}] ${USER_NOT_FOUND_MESSAGE} | UserId: ${userId}`,
+                {
+                    method_name: this.METHOD_NAME,
+                    userId,
+                },
+            );
+
+            throw new BaseException(
+                USER_NOT_FOUND_MESSAGE,
+                HttpStatusCode.NOT_FOUND,
+            );
+        }
+
+        const auth = await this._authRepository.GetPerUserId(userId);
+
+        if (auth == null) {
+            this._logger.warn(
+                `[${this.METHOD_NAME}] Auth table to user not exists | UserId: ${userId}`,
+                {
+                    method_name: this.METHOD_NAME,
+                    userId,
+                },
+            );
+
+            throw new BaseException(
+                "Auth table to user not exists",
+                HttpStatusCode.NOT_FOUND,
+            );
+        }
+
+        if (auth.refreshToken != refreshToken) {
+            this._logger.warn(
+                `[${this.METHOD_NAME}] Refresh token is invalid | UserId: ${userId}`,
+                {
+                    method_name: this.METHOD_NAME,
+                    userId,
+                },
+            );
+
+            throw new BaseException(
+                "Refresh token is invalid",
+                HttpStatusCode.UNAUTHORIZED,
+            );
+        }
+
         return await this.GenerateToken(auth, user);
     }
 
@@ -114,13 +169,6 @@ export default class AuthService implements IAuthService {
             refreshToken.refreshToken ?? "",
             secrets.jwt.expiresIn,
         );
-    }
-
-    private async RefreshToken(
-        token: string,
-        refreshToken: string,
-    ): Promise<boolean> {
-        throw new Error(`${token} ${refreshToken}`);
     }
 
     private random(length: number): string {

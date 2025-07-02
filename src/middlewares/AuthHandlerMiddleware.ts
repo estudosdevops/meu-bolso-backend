@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { verify } from "jsonwebtoken";
+import { JsonWebTokenError, verify } from "jsonwebtoken";
 import { HttpStatusCode } from "../models/enums/HttpStatusCode";
 import secrets from "../configs/secrets";
 import logger from "../configs/logger/logger";
@@ -8,6 +8,7 @@ import { jwtPayload } from "../types/jwtPayload";
 const PUBLIC_ROUTES: { method: string; path: string }[] = [
     { method: "POST", path: "/user" },
     { method: "POST", path: "/auth/login" },
+    { method: "POST", path: "/auth/refresh" },
 ];
 
 export default function authHandlerMiddleware(
@@ -45,10 +46,15 @@ export default function authHandlerMiddleware(
 
             return next();
         } catch (error) {
-            logger.error(`[AuthMiddleware] Token invalid | Reason: ${error}`, {
-                method_name: "AuthMiddleware",
-                error,
-            });
+            const errorConverted = error as JsonWebTokenError;
+
+            logger.error(
+                `[AuthMiddleware] Token invalid | Reason: ${errorConverted.message}`,
+                {
+                    method_name: "AuthMiddleware",
+                    errorConverted,
+                },
+            );
 
             res.status(HttpStatusCode.UNAUTHORIZED).send();
         }

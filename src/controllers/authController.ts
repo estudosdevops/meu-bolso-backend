@@ -17,4 +17,12 @@ export default class AuthController {
 
         res.status(HttpStatusCode.OK).json(response);
     }
+
+    async Refresh(req: Request, res: Response): Promise<void> {
+        const { userId, refreshToken } = req.body;
+
+        const response = await this._authService.Refresh(refreshToken, userId);
+
+        res.status(HttpStatusCode.OK).json(response);
+    }
 }

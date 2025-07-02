@@ -14,5 +14,5 @@ export default function errorHandlerMiddleware(
 
     const response = new BaseResponse(false, err.message, statusCode, null);
 
-    return void res.status(statusCode).json(response);
+    res.status(statusCode).json(response);
 }

@@ -1,6 +1,7 @@
 import { User } from "@prisma/client";
 
 import UserDto from "../../../models/user/UserDto";
+import UserWithoutPassDto from "../../../models/user/UserWithoutPassDto";
 
 export default interface IUserRepository {
     GetPerId(id: string): Promise<User | null>;
@@ -9,7 +10,7 @@ export default interface IUserRepository {
 
     Create(data: UserDto): Promise<User>;
 
-    Update(data: UserDto, id: string): Promise<User>;
+    Update(data: UserWithoutPassDto, id: string): Promise<User>;
 
     Delete(id: string): Promise<void>;
 }

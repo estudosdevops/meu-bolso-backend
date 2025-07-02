@@ -23,13 +23,14 @@ export default class UserService implements IUserService {
 
     private readonly _logger = logger;
 
-    private readonly METHOD_NAME = "UserService";
+    private readonly SERVICE_NAME = "UserService";
 
     async GetPerId(id: string): Promise<User> {
         this._logger.info(
-            `[${this.METHOD_NAME}] Getting user information per id | UserId: ${id}`,
+            `[${this.SERVICE_NAME}-${this.GetPerId.name}] Getting user information per id | UserId: ${id}`,
             {
-                method_name: this.METHOD_NAME,
+                service_name: this.SERVICE_NAME,
+                method_name: this.GetPerId.name,
                 userId: id,
             },
         );
@@ -38,9 +39,10 @@ export default class UserService implements IUserService {
 
         if (user == null) {
             this._logger.info(
-                `[${this.METHOD_NAME}] User not found | UserId: ${id}`,
+                `[${this.SERVICE_NAME}-${this.GetPerId.name}] User not found | UserId: ${id}`,
                 {
-                    method_name: this.METHOD_NAME,
+                    service_name: this.SERVICE_NAME,
+                    method_name: this.GetPerId.name,
                     userId: id,
                 },
             );
@@ -49,9 +51,10 @@ export default class UserService implements IUserService {
         }
 
         this._logger.info(
-            `[${this.METHOD_NAME}] User founded with successfully | UserId: ${id}`,
+            `[${this.SERVICE_NAME}-${this.GetPerId.name}] User founded with successfully | UserId: ${id}`,
             {
-                method_name: this.METHOD_NAME,
+                service_name: this.SERVICE_NAME,
+                method_name: this.GetPerId.name,
                 userId: id,
             },
         );
@@ -61,9 +64,10 @@ export default class UserService implements IUserService {
 
     async GetPerMail(email: string): Promise<User> {
         this._logger.info(
-            `[${this.METHOD_NAME}] Getting user information per email | Email: ${email}`,
+            `[${this.SERVICE_NAME}-${this.GetPerMail.name}] Getting user information per email | Email: ${email}`,
             {
-                method_name: this.METHOD_NAME,
+                service_name: this.SERVICE_NAME,
+                method_name: this.GetPerMail.name,
                 userEmail: email,
             },
         );
@@ -72,9 +76,10 @@ export default class UserService implements IUserService {
 
         if (user == null) {
             this._logger.info(
-                `[${this.METHOD_NAME}] User not found | Email: ${email}`,
+                `[${this.SERVICE_NAME}-${this.GetPerMail.name}] User not found | Email: ${email}`,
                 {
-                    method_name: this.METHOD_NAME,
+                    service_name: this.SERVICE_NAME,
+                    method_name: this.GetPerMail.name,
                     userEmail: email,
                 },
             );
@@ -83,9 +88,10 @@ export default class UserService implements IUserService {
         }
 
         this._logger.info(
-            `[${this.METHOD_NAME}] User founded with successfully | Email: ${email}, UserId: ${user.id}`,
+            `[${this.SERVICE_NAME}-${this.GetPerMail.name}] User founded with successfully | Email: ${email} | UserId: ${user.id}`,
             {
-                method_name: this.METHOD_NAME,
+                service_name: this.SERVICE_NAME,
+                method_name: this.GetPerMail.name,
                 userEmail: email,
                 userId: user.id,
             },
@@ -96,9 +102,10 @@ export default class UserService implements IUserService {
 
     async Create(data: UserDto): Promise<User> {
         this._logger.info(
-            `[${this.METHOD_NAME}] Creating a new user | User email: ${data.email}`,
+            `[${this.SERVICE_NAME}-${this.Create.name}] Creating a new user | Email: ${data.email}`,
             {
-                method_name: this.METHOD_NAME,
+                service_name: this.SERVICE_NAME,
+                method_name: this.Create.name,
                 userEmail: data.email,
             },
         );
@@ -108,9 +115,10 @@ export default class UserService implements IUserService {
         await this.CreateAuthUserRelation(user.id, data.password);
 
         this._logger.info(
-            `[${this.METHOD_NAME}] User created with successfully | User ID: ${user.id} | User email: ${user.email}`,
+            `[${this.SERVICE_NAME}-${this.Create.name}] User created with successfully | UserId: ${user.id} | Email: ${user.email}`,
             {
-                method_name: this.METHOD_NAME,
+                service_name: this.SERVICE_NAME,
+                method_name: this.Create.name,
                 userId: user.id,
                 userEmail: user.email,
             },
@@ -121,9 +129,10 @@ export default class UserService implements IUserService {
 
     async Update(data: UserDto, id: string): Promise<User> {
         this._logger.info(
-            `[${this.METHOD_NAME}] Updating user informations | User ID: ${id}`,
+            `[${this.SERVICE_NAME}-${this.Update.name}] Updating user informations | UserId: ${id}`,
             {
-                method_name: this.METHOD_NAME,
+                service_name: this.SERVICE_NAME,
+                method_name: this.Update.name,
                 userId: id,
             },
         );
@@ -133,9 +142,10 @@ export default class UserService implements IUserService {
         const user = await this._userRepository.Update(data, id);
 
         this._logger.info(
-            `[${this.METHOD_NAME}] User updated with successfully | User ID: ${user.id} | User email: ${user.email}`,
+            `[${this.SERVICE_NAME}-${this.Update.name}] User updated with successfully | UserId: ${user.id} | Email: ${user.email}`,
             {
-                method_name: this.METHOD_NAME,
+                service_name: this.SERVICE_NAME,
+                method_name: this.Update.name,
                 userId: user.id,
                 userEmail: user.email,
             },
@@ -146,9 +156,10 @@ export default class UserService implements IUserService {
 
     async Delete(id: string): Promise<void> {
         this._logger.info(
-            `[${this.METHOD_NAME}] Deleting user | User ID: ${id}`,
+            `[${this.SERVICE_NAME}-${this.Delete.name}] Deleting user | UserId: ${id}`,
             {
-                method_name: this.METHOD_NAME,
+                service_name: this.SERVICE_NAME,
+                method_name: this.Delete.name,
                 userId: id,
             },
         );
@@ -158,9 +169,10 @@ export default class UserService implements IUserService {
         await this._userRepository.Delete(id);
 
         this._logger.info(
-            `[${this.METHOD_NAME}] User deleted | User ID: ${id}`,
+            `[${this.SERVICE_NAME}-${this.Delete.name}] User deleted | UserId: ${id}`,
             {
-                method_name: this.METHOD_NAME,
+                service_name: this.SERVICE_NAME,
+                method_name: this.Delete.name,
                 userId: id,
             },
         );
@@ -173,9 +185,10 @@ export default class UserService implements IUserService {
 
         if (user == null) {
             this._logger.info(
-                `[${this.METHOD_NAME}] User not found | UserId: ${id}`,
+                `[${this.SERVICE_NAME}-${this.HasUserInDatabase.name}] User not found | UserId: ${id}`,
                 {
-                    method_name: this.METHOD_NAME,
+                    service_name: this.SERVICE_NAME,
+                    method_name: this.HasUserInDatabase.name,
                     userId: id,
                 },
             );
@@ -189,9 +202,10 @@ export default class UserService implements IUserService {
         password: string,
     ): Promise<void> {
         this._logger.info(
-            `[${this.METHOD_NAME}] Creating the auth relation | UserId: ${userId}`,
+            `[${this.SERVICE_NAME}-${this.CreateAuthUserRelation.name}] Creating the auth relation | UserId: ${userId}`,
             {
-                method_name: this.METHOD_NAME,
+                service_name: this.SERVICE_NAME,
+                method_name: this.CreateAuthUserRelation.name,
                 userId,
             },
         );
@@ -204,9 +218,10 @@ export default class UserService implements IUserService {
         );
 
         this._logger.info(
-            `[${this.METHOD_NAME}] Created the auth relation with success | UserId: ${userId} | AuthId: ${auth.id}`,
+            `[${this.SERVICE_NAME}-${this.CreateAuthUserRelation.name}] Created the auth relation with success | UserId: ${userId} | AuthId: ${auth.id}`,
             {
-                method_name: this.METHOD_NAME,
+                service_name: this.SERVICE_NAME,
+                method_name: this.CreateAuthUserRelation.name,
                 userId,
                 authId: auth.id,
             },

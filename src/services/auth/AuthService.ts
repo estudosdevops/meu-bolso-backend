@@ -28,16 +28,17 @@ export default class AuthService implements IAuthService {
 
     private readonly _logger = logger;
 
-    private readonly METHOD_NAME = "AuthService";
+    private readonly SERVICE_NAME = "AuthService";
 
     async Login(email: string, password: string): Promise<AuthResponse> {
         const user = await this._userRepository.GetPerMail(email);
 
         if (user == null) {
             this._logger.warn(
-                `[${this.METHOD_NAME}] ${USER_NOT_FOUND_MESSAGE} | Email: ${email}`,
+                `[${this.SERVICE_NAME}-${this.Login.name}] ${USER_NOT_FOUND_MESSAGE} | Email: ${email}`,
                 {
-                    method_name: this.METHOD_NAME,
+                    service_name: this.SERVICE_NAME,
+                    method_name: this.Login.name,
                     userEmail: email,
                 },
             );
@@ -52,9 +53,10 @@ export default class AuthService implements IAuthService {
 
         if (auth == undefined) {
             this._logger.warn(
-                `[${this.METHOD_NAME}] Auth table to user not exists | UserId: ${user.id}`,
+                `[${this.SERVICE_NAME}-${this.Login.name}] Auth table to user not exists | UserId: ${user.id}`,
                 {
-                    method_name: this.METHOD_NAME,
+                    service_name: this.SERVICE_NAME,
+                    method_name: this.Login.name,
                     userEmail: email,
                     userId: user.id,
                 },
@@ -73,9 +75,10 @@ export default class AuthService implements IAuthService {
 
         if (!hasCorrectPassword) {
             this._logger.warn(
-                `[${this.METHOD_NAME}] User password is incorrect | Email: ${email}`,
+                `[${this.SERVICE_NAME}-${this.Login.name}] User password is incorrect | Email: ${email}`,
                 {
-                    method_name: this.METHOD_NAME,
+                    service_name: this.SERVICE_NAME,
+                    method_name: this.Login.name,
                     userEmail: email,
                 },
             );
@@ -94,9 +97,10 @@ export default class AuthService implements IAuthService {
 
         if (user == null) {
             this._logger.warn(
-                `[${this.METHOD_NAME}] ${USER_NOT_FOUND_MESSAGE} | UserId: ${userId}`,
+                `[${this.SERVICE_NAME}-${this.Refresh.name}] ${USER_NOT_FOUND_MESSAGE} | UserId: ${userId}`,
                 {
-                    method_name: this.METHOD_NAME,
+                    service_name: this.SERVICE_NAME,
+                    method_name: this.Refresh.name,
                     userId,
                 },
             );
@@ -111,9 +115,10 @@ export default class AuthService implements IAuthService {
 
         if (auth == null) {
             this._logger.warn(
-                `[${this.METHOD_NAME}] Auth table to user not exists | UserId: ${userId}`,
+                `[${this.SERVICE_NAME}-${this.Refresh.name}] Auth table to user not exists | UserId: ${userId}`,
                 {
-                    method_name: this.METHOD_NAME,
+                    service_name: this.SERVICE_NAME,
+                    method_name: this.Refresh.name,
                     userId,
                 },
             );
@@ -126,9 +131,10 @@ export default class AuthService implements IAuthService {
 
         if (auth.refreshToken != refreshToken) {
             this._logger.warn(
-                `[${this.METHOD_NAME}] Refresh token is invalid | UserId: ${userId}`,
+                `[${this.SERVICE_NAME}-${this.Refresh.name}] Refresh token is invalid | UserId: ${userId}`,
                 {
-                    method_name: this.METHOD_NAME,
+                    service_name: this.SERVICE_NAME,
+                    method_name: this.Refresh.name,
                     userId,
                 },
             );

@@ -2,6 +2,7 @@ import { User } from "@prisma/client";
 import UserDto from "../../models/user/UserDto";
 import IUserRepository from "./interfaces/IUserRepository";
 import prisma from "../../configs/db/prisma";
+import UserWithoutPassDto from "../../models/user/UserWithoutPassDto";
 
 export default class UserRepository implements IUserRepository {
     private readonly _prisma = prisma;
@@ -34,7 +35,7 @@ export default class UserRepository implements IUserRepository {
         });
     }
 
-    async Update(data: UserDto, id: string): Promise<User> {
+    async Update(data: UserWithoutPassDto, id: string): Promise<User> {
         return await this._prisma.user.update({
             where: {
                 id,

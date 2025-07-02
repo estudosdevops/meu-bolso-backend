@@ -1,9 +1,10 @@
+import { container } from "tsyringe";
+import { validationMiddleware } from "../middlewares/validationRequestMiddleware";
 import { Request, Response, Router } from "express";
 
-import { container } from "tsyringe";
 import UserController from "../controllers/UserController";
-import { validationMiddleware } from "../middlewares/validationRequestMiddleware";
 import UserDto from "../models/user/UserDto";
+import UserWithoutPassDto from "../models/user/UserWithoutPassDto";
 
 const router = Router();
 
@@ -13,7 +14,7 @@ router.get("/:id", (req: Request, res: Response) =>
     userController.GetUserPerId(req, res),
 );
 
-router.get("/:email", (req: Request, res: Response) =>
+router.get("/email/:email", (req: Request, res: Response) =>
     userController.GetUserPerEmail(req, res),
 );
 
@@ -23,7 +24,7 @@ router.post("", validationMiddleware(UserDto), (req: Request, res: Response) =>
 
 router.put(
     "/:id",
-    validationMiddleware(UserDto),
+    validationMiddleware(UserWithoutPassDto),
     (req: Request, res: Response) => userController.UpdateUser(req, res),
 );
 

@@ -5,6 +5,7 @@ import { NextFunction, Request, Response } from "express";
 import BaseException from "../models/bases/BaseException";
 import { BODY_REQUEST_INVALID } from "../models/utils/Constants";
 import { HttpStatusCode } from "../models/enums/HttpStatusCode";
+import logger from "../configs/logger/logger";
 
 export function validationMiddleware<T>(
     dtoClass: new () => T,
@@ -17,6 +18,15 @@ export function validationMiddleware<T>(
         });
 
         if (errors.length > 0) {
+            logger.warn(
+                `[ValidationMiddleware] The body request is invalid to the controller | Path: ${req.path}`,
+                {
+                    method_name: "ValidationMiddleware",
+                    path: req.path,
+                    errors,
+                },
+            );
+
             throw new BaseException(
                 BODY_REQUEST_INVALID,
                 HttpStatusCode.BAD_REQUEST,

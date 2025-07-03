@@ -47,6 +47,10 @@ import IUserService from "../services/user/interfaces/IUserService";
 import IAuthService from "../services/auth/interfaces/IAuthService";
 import AuthService from "../services/auth/AuthService";
 
+import IBankService from "../services/bank/interfaces/IBankService";
+import BankService from "../services/bank/BankService";
+
 container
     .register<IUserService>("IUserService", UserService)
-    .register<IAuthService>("IAuthService", AuthService);
+    .register<IAuthService>("IAuthService", AuthService)
+    .register<IBankService>("IBankService", BankService);

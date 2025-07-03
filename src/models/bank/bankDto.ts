@@ -1,7 +1,22 @@
+import {
+    IsDefined,
+    IsNumber,
+    IsNumberString,
+    IsOptional,
+} from "class-validator";
+
 export default class BankDto {
-    constructor(
-        public compe: number,
-        public ispb: number,
-        public name: string,
-    ) {}
+    @IsDefined()
+    name!: string;
+
+    @IsNumber()
+    @IsOptional()
+    compe!: number;
+
+    @IsOptional()
+    @IsNumberString()
+    ispb!: string;
+
+    @IsDefined()
+    userId!: string;
 }

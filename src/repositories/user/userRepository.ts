@@ -10,12 +10,12 @@ export default class UserRepository implements IUserRepository {
     private readonly defaultBanks = [
         {
             name: "Nubank",
-            ispb: 18236120,
+            ispb: "18236120",
             compe: 260,
         },
         {
             name: "Itaú",
-            ispb: 60701190,
+            ispb: "60701190",
             compe: 341,
         },
     ];
@@ -50,7 +50,7 @@ export default class UserRepository implements IUserRepository {
                     },
                 },
                 banks: {
-                    create: { ...this.defaultBanks },
+                    create: [...this.defaultBanks],
                 },
             },
         });

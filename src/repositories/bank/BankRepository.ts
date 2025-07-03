@@ -6,6 +6,12 @@ import prisma from "../../configs/db/prisma";
 export default class BankRepository implements IBankRepository {
     private readonly _prisma = prisma;
 
+    async GetAll(userId: string): Promise<Bank[]> {
+        return await this._prisma.bank.findMany({
+            where: { userId },
+        });
+    }
+
     async GetPerId(id: string): Promise<Bank | null> {
         return await this._prisma.bank.findUnique({
             where: { id },
@@ -14,7 +20,7 @@ export default class BankRepository implements IBankRepository {
 
     async Update(data: BankDto, id: string): Promise<Bank> {
         return await this._prisma.bank.update({
-            where: { id },
+            where: { id, userId: data.userId },
             data,
         });
     }

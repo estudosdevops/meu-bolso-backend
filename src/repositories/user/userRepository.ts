@@ -7,6 +7,19 @@ import UserWithoutPassDto from "../../models/user/UserWithoutPassDto";
 export default class UserRepository implements IUserRepository {
     private readonly _prisma = prisma;
 
+    private readonly defaultBanks = [
+        {
+            name: "Nubank",
+            ispb: 18236120,
+            compe: 260,
+        },
+        {
+            name: "Itaú",
+            ispb: 60701190,
+            compe: 341,
+        },
+    ];
+
     async GetPerId(id: string): Promise<User | null> {
         return await this._prisma.user.findUnique({
             where: {
@@ -31,6 +44,14 @@ export default class UserRepository implements IUserRepository {
                 name: data.name,
                 cpf: data.cpf,
                 email: data.email,
+                auth: {
+                    create: {
+                        password: data.password,
+                    },
+                },
+                banks: {
+                    create: { ...this.defaultBanks },
+                },
             },
         });
     }

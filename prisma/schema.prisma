@@ -57,7 +57,7 @@ model User {
 model BankAccount {
   id            String  @id @unique @default(uuid())
   accountNumber String  @unique
-  agency        Int     @unique
+  agency        String  @unique
   balance       Float
   active        Boolean @default(true)
 

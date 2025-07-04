@@ -50,7 +50,11 @@ import AuthService from "../services/auth/AuthService";
 import IBankService from "../services/bank/interfaces/IBankService";
 import BankService from "../services/bank/BankService";
 
+import IBankAccountService from "../services/bankAccount/interfaces/IBankAccountService";
+import BankAccountService from "../services/bankAccount/BankAccountService";
+
 container
     .register<IUserService>("IUserService", UserService)
     .register<IAuthService>("IAuthService", AuthService)
-    .register<IBankService>("IBankService", BankService);
+    .register<IBankService>("IBankService", BankService)
+    .register<IBankAccountService>("IBankAccountService", BankAccountService);

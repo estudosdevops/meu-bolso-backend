@@ -2,7 +2,7 @@ import { container } from "tsyringe";
 import { validationMiddleware } from "../middlewares/validationRequestMiddleware";
 import { Request, Response, Router } from "express";
 
-import AuthController from "../controllers/authController";
+import AuthController from "../controllers/AuthController";
 
 import AuthDto from "../models/auth/AuthDto";
 import RefreshDto from "../models/auth/RefreshDto";

@@ -1,8 +1,19 @@
+import { IsDefined, IsNumber } from "class-validator";
+
 export default class BankAccountDto {
-    constructor(
-        public accountNumber: string,
-        public agency: number,
-        public balance: number,
-        public bankId: string,
-    ) {}
+    @IsDefined()
+    public accountNumber!: string;
+
+    @IsDefined()
+    public agency!: string;
+
+    @IsDefined()
+    @IsNumber()
+    public balance!: number;
+
+    @IsDefined()
+    public bankId!: string;
+
+    @IsDefined()
+    public userId!: string;
 }

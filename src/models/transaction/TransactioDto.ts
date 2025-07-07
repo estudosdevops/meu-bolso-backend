@@ -1,15 +1,39 @@
 import { TransactionType } from "@prisma/client";
+import {
+    IsDateString,
+    IsDefined,
+    IsEnum,
+    IsNumber,
+    IsOptional,
+    IsString,
+} from "class-validator";
 
 export default class TransactionDto {
-    constructor(
-        public value: number,
-        public date: Date,
-        public type: TransactionType,
+    @IsDefined()
+    @IsNumber()
+    public value!: number;
 
-        public userId: string,
-        public bankAccountId: string,
+    @IsDefined()
+    @IsDateString()
+    public date!: Date;
 
-        public description?: string,
-        public expenseId?: string,
-    ) {}
+    @IsDefined()
+    @IsEnum(TransactionType)
+    public type!: TransactionType;
+
+    @IsDefined()
+    @IsString()
+    public userId!: string;
+
+    @IsDefined()
+    @IsString()
+    public bankAccountId!: string;
+
+    @IsOptional()
+    @IsString()
+    public description!: string;
+
+    @IsOptional()
+    @IsString()
+    public expenseId!: string;
 }

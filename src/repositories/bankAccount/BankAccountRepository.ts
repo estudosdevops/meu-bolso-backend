@@ -15,19 +15,16 @@ export default class BankAccountRepository implements IBankAccountRepository {
         });
     }
 
-    async GetPerId(userId: string, id: string): Promise<BankAccount | null> {
+    async GetPerId(id: string): Promise<BankAccount | null> {
         return await this._prisma.bankAccount.findUnique({
-            where: { userId, id, active: true },
+            where: { id, active: true },
             include: { bank: true },
         });
     }
 
-    async Create(userId: string, data: BankAccountDto): Promise<BankAccount> {
+    async Create(data: BankAccountDto): Promise<BankAccount> {
         return await this._prisma.bankAccount.create({
-            data: {
-                ...data,
-                userId,
-            },
+            data,
         });
     }
 
@@ -44,7 +41,23 @@ export default class BankAccountRepository implements IBankAccountRepository {
             },
             data: {
                 ...data,
-                updatedAt: Date.now().toString(),
+                updatedAt: new Date(Date.now()),
+            },
+        });
+    }
+
+    async UpdateBalance(
+        bankAccountId: string,
+        balance: number,
+    ): Promise<BankAccount> {
+        return await this._prisma.bankAccount.update({
+            where: {
+                id: bankAccountId,
+                active: true,
+            },
+            data: {
+                balance,
+                updatedAt: new Date(Date.now()),
             },
         });
     }
@@ -57,7 +70,7 @@ export default class BankAccountRepository implements IBankAccountRepository {
             },
             data: {
                 active: false,
-                updatedAt: Date.now().toString(),
+                updatedAt: new Date(Date.now()),
             },
         });
     }

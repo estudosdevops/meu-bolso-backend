@@ -1,12 +1,12 @@
 import BankRepository from "../../../repositories/bank/BankRepository";
 import { prismaMock } from "../../setup/setupPrisma";
-import BankDto from "../../../models/bank/bankDto";
 
 type bankPrisma = {
     id: string;
     compe: number;
-    ispb: bigint;
+    ispb: string;
     name: string;
+    userId: string;
 };
 
 describe("Success BankRepository methods", () => {
@@ -15,18 +15,20 @@ describe("Success BankRepository methods", () => {
     const bankPrismaMock: bankPrisma = {
         id: "bank-123",
         compe: 123,
-        ispb: BigInt("12345678901234"),
-        name: "Banco XPTO",
+        ispb: "12345678901234",
+        name: "XPTO",
+        userId: "123-345",
     };
 
     test("should create new bank", async () => {
         prismaMock.bank.create.mockResolvedValue(bankPrismaMock);
 
-        const bankDto = new BankDto(
-            bankPrismaMock.compe,
-            Number(bankPrismaMock.ispb),
-            bankPrismaMock.name,
-        );
+        const bankDto = {
+            name: "XPTO",
+            compe: 123,
+            ispb: "12345678901234",
+            userId: "123-345",
+        };
 
         const bankCreated = await bankRepository.Create(bankDto);
 
@@ -41,19 +43,28 @@ describe("Success BankRepository methods", () => {
         expect(bank).toEqual(bankPrismaMock);
     });
 
+    test("Should get a list of banks", async () => {
+        prismaMock.bank.findMany.mockResolvedValue([bankPrismaMock]);
+
+        const banks = await bankRepository.GetAll(bankPrismaMock.userId);
+
+        expect(banks.length).toBeGreaterThanOrEqual(1);
+    });
+
     test("should update a bank", async () => {
         const bankPrismaMockUpdated = {
             ...bankPrismaMock,
-            name: "Banco Atualizado",
+            name: "XPTZ",
         };
 
         prismaMock.bank.update.mockResolvedValue(bankPrismaMockUpdated);
 
-        const bankDtoUpdated = new BankDto(
-            bankPrismaMockUpdated.compe,
-            Number(bankPrismaMockUpdated.ispb),
-            bankPrismaMockUpdated.name,
-        );
+        const bankDtoUpdated = {
+            name: bankPrismaMockUpdated.name,
+            compe: bankPrismaMockUpdated.compe,
+            ispb: bankPrismaMockUpdated.ispb,
+            userId: bankPrismaMockUpdated.userId,
+        };
 
         const bank = await bankRepository.Update(
             bankDtoUpdated,

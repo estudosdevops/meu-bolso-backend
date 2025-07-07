@@ -110,9 +110,9 @@ export default class UserService implements IUserService {
             },
         );
 
-        const user = await this._userRepository.Create(data);
+        data.password = await encryptText(data.password);
 
-        await this.CreateAuthUserRelation(user.id, data.password);
+        const user = await this._userRepository.Create(data);
 
         this._logger.info(
             `[${this.SERVICE_NAME}-${this.Create.name}] User created with successfully | UserId: ${user.id} | Email: ${user.email}`,
@@ -195,36 +195,5 @@ export default class UserService implements IUserService {
 
             throw new BaseException("User not found", HttpStatusCode.NOT_FOUND);
         }
-    }
-
-    private async CreateAuthUserRelation(
-        userId: string,
-        password: string,
-    ): Promise<void> {
-        this._logger.info(
-            `[${this.SERVICE_NAME}-${this.CreateAuthUserRelation.name}] Creating the auth relation | UserId: ${userId}`,
-            {
-                service_name: this.SERVICE_NAME,
-                method_name: this.CreateAuthUserRelation.name,
-                userId,
-            },
-        );
-
-        const passwordEncrypted = await encryptText(password);
-
-        const auth = await this._authRepository.Create(
-            passwordEncrypted,
-            userId,
-        );
-
-        this._logger.info(
-            `[${this.SERVICE_NAME}-${this.CreateAuthUserRelation.name}] Created the auth relation with success | UserId: ${userId} | AuthId: ${auth.id}`,
-            {
-                service_name: this.SERVICE_NAME,
-                method_name: this.CreateAuthUserRelation.name,
-                userId,
-                authId: auth.id,
-            },
-        );
     }
 }

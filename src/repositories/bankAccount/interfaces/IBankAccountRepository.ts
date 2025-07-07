@@ -4,15 +4,17 @@ import BankAccountDto from "../../../models/bankAccount/BankAccountDto";
 export default interface IBankAccountRepository {
     GetAll(userId: string): Promise<BankAccount[]>;
 
-    GetPerId(userId: string, id: string): Promise<BankAccount | null>;
+    GetPerId(id: string): Promise<BankAccount | null>;
 
-    Create(userId: string, data: BankAccountDto): Promise<BankAccount>;
+    Create(data: BankAccountDto): Promise<BankAccount>;
 
     Update(
         bankAccountId: string,
         userId: string,
         data: BankAccountDto,
     ): Promise<BankAccount>;
+
+    UpdateBalance(bankAccountId: string, balance: number): Promise<BankAccount>;
 
     Delete(bankAccountId: string): Promise<void>;
 }

@@ -3,7 +3,7 @@ import TransactionDto from "../../models/transaction/TransactioDto";
 import ITransactionRepository from "./interfaces/ITransactionRepository";
 import prisma from "../../configs/db/prisma";
 
-export class TransactionRepository implements ITransactionRepository {
+export default class TransactionRepository implements ITransactionRepository {
     private readonly _prisma = prisma;
 
     async GetAll(userId: string): Promise<Transaction[]> {

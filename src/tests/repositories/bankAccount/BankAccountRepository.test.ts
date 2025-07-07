@@ -1,12 +1,11 @@
 import BankAccountRepository from "../../../repositories/bankAccount/BankAccountRepository";
 import { prismaMock } from "../../setup/setupPrisma";
-import BankAccountDto from "../../../models/bankAccount/BankAccountDto";
 
 // Type baseado no schema.prisma
 type bankAccountPrisma = {
     id: string;
     accountNumber: string;
-    agency: number;
+    agency: string;
     balance: number;
     active: boolean;
     bankId: string;
@@ -21,7 +20,7 @@ describe("Success BankAccountRepository methods", () => {
     const bankAccountPrismaMock: bankAccountPrisma = {
         id: "bankacc-123",
         accountNumber: "123456-7",
-        agency: 1234,
+        agency: "1234",
         balance: 1000.5,
         active: true,
         bankId: "bank-123",
@@ -33,17 +32,16 @@ describe("Success BankAccountRepository methods", () => {
     test("should create new bank account", async () => {
         prismaMock.bankAccount.create.mockResolvedValue(bankAccountPrismaMock);
 
-        const bankAccountDto = new BankAccountDto(
-            bankAccountPrismaMock.accountNumber,
-            bankAccountPrismaMock.agency,
-            bankAccountPrismaMock.balance,
-            bankAccountPrismaMock.bankId,
-        );
+        const bankAccountDto = {
+            accountNumber: "123456-7",
+            agency: "1234",
+            userId: "user-123",
+            bankId: "bank-123",
+            balance: 1000.5,
+        };
 
-        const bankAccountCreated = await bankAccountRepository.Create(
-            bankAccountPrismaMock.userId,
-            bankAccountDto,
-        );
+        const bankAccountCreated =
+            await bankAccountRepository.Create(bankAccountDto);
 
         expect(bankAccountCreated).toEqual(bankAccountPrismaMock);
     });
@@ -66,7 +64,6 @@ describe("Success BankAccountRepository methods", () => {
         );
 
         const account = await bankAccountRepository.GetPerId(
-            bankAccountPrismaMock.userId,
             bankAccountPrismaMock.id,
         );
 
@@ -77,19 +74,20 @@ describe("Success BankAccountRepository methods", () => {
         const bankAccountPrismaMockUpdated = {
             ...bankAccountPrismaMock,
             balance: 2000,
-            updatedAt: new Date(),
+            updatedAt: new Date(Date.now()),
         };
 
         prismaMock.bankAccount.update.mockResolvedValue(
             bankAccountPrismaMockUpdated,
         );
 
-        const bankAccountDtoUpdated = new BankAccountDto(
-            bankAccountPrismaMockUpdated.accountNumber,
-            bankAccountPrismaMockUpdated.agency,
-            bankAccountPrismaMockUpdated.balance,
-            bankAccountPrismaMockUpdated.bankId,
-        );
+        const bankAccountDtoUpdated = {
+            accountNumber: "123456-7",
+            agency: "1234",
+            userId: "user-123",
+            bankId: "bank-123",
+            balance: 2000,
+        };
 
         const account = await bankAccountRepository.Update(
             bankAccountPrismaMock.id,
@@ -101,11 +99,30 @@ describe("Success BankAccountRepository methods", () => {
         expect(account.updatedAt).not.toBeNull();
     });
 
+    test("Should update a balance from a bank account", async () => {
+        const bankAccountPrismaMockUpdated = {
+            ...bankAccountPrismaMock,
+            balance: 3000,
+            updatedAt: new Date(Date.now()),
+        };
+
+        prismaMock.bankAccount.update.mockResolvedValue(
+            bankAccountPrismaMockUpdated,
+        );
+
+        const account = await bankAccountRepository.UpdateBalance(
+            "bankacc-123",
+            3000,
+        );
+
+        expect(account.balance).toEqual(3000);
+    });
+
     test("should delete a bank account", async () => {
         prismaMock.bankAccount.update.mockResolvedValue({
             ...bankAccountPrismaMock,
             active: false,
-            updatedAt: new Date(),
+            updatedAt: new Date(Date.now()),
         });
 
         await expect(
@@ -121,7 +138,7 @@ describe("Throw BankAccountRepository methods", () => {
         prismaMock.bankAccount.findUnique.mockResolvedValue(null);
 
         await expect(
-            bankAccountRepository.GetPerId("user-123", "bankacc-123"),
+            bankAccountRepository.GetPerId("bankacc-123"),
         ).resolves.toBeNull();
     });
 });

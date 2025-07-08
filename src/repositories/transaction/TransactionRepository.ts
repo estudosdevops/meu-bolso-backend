@@ -1,4 +1,4 @@
-import { Transaction } from "@prisma/client";
+import { Prisma, Transaction } from "@prisma/client";
 import TransactionDto from "../../models/transaction/TransactioDto";
 import ITransactionRepository from "./interfaces/ITransactionRepository";
 import prisma from "../../configs/db/prisma";
@@ -36,8 +36,13 @@ export default class TransactionRepository implements ITransactionRepository {
         });
     }
 
-    async Create(data: TransactionDto): Promise<Transaction> {
-        return await this._prisma.transaction.create({
+    async Create(
+        data: TransactionDto,
+        tx?: Prisma.TransactionClient,
+    ): Promise<Transaction> {
+        const client = tx ?? this._prisma;
+
+        return await client.transaction.create({
             data,
         });
     }
@@ -46,8 +51,11 @@ export default class TransactionRepository implements ITransactionRepository {
         transactionId: string,
         userId: string,
         data: TransactionDto,
+        tx?: Prisma.TransactionClient,
     ): Promise<Transaction> {
-        return await this._prisma.transaction.update({
+        const client = tx ?? this._prisma;
+
+        return await client.transaction.update({
             where: { id: transactionId, userId },
             data,
         });

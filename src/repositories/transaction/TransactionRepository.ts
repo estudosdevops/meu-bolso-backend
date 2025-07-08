@@ -61,8 +61,13 @@ export default class TransactionRepository implements ITransactionRepository {
         });
     }
 
-    async Delete(transactionId: string): Promise<void> {
-        await this._prisma.transaction.delete({
+    async Delete(
+        transactionId: string,
+        tx?: Prisma.TransactionClient,
+    ): Promise<void> {
+        const client = tx ?? this._prisma;
+
+        await client.transaction.delete({
             where: { id: transactionId },
         });
     }

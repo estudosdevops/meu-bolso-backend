@@ -1,5 +1,6 @@
 import { Transaction } from "@prisma/client";
 import TransactionDto from "../../../models/transaction/TransactioDto";
+import UpdateTransactionDto from "../../../models/transaction/UpdateTransactionDto";
 
 export default interface ITransactionService {
     GetAll(userId: string): Promise<Transaction[]>;
@@ -11,8 +12,8 @@ export default interface ITransactionService {
     Update(
         id: string,
         userId: string,
-        data: TransactionDto,
+        data: UpdateTransactionDto,
     ): Promise<Transaction>;
 
-    Delete(id: string): Promise<void>;
+    Delete(id: string, userId: string): Promise<void>;
 }

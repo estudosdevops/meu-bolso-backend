@@ -57,7 +57,10 @@ export default class TransactionRepository implements ITransactionRepository {
 
         return await client.transaction.update({
             where: { id: transactionId, userId },
-            data,
+            data: {
+                ...data,
+                updatedAt: new Date(Date.now()),
+            },
         });
     }
 

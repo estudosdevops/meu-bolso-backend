@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { HttpStatusCode } from "../../models/enums/HttpStatusCode";
 import { inject, injectable } from "tsyringe";
 import { BankAccount, Transaction, TransactionType } from "@prisma/client";
 
@@ -7,12 +8,14 @@ import ITransactionService from "./interfaces/ITransactionService";
 import IBankAccountService from "../bankAccount/interfaces/IBankAccountService";
 
 import TransactionDto from "../../models/transaction/TransactioDto";
+import UpdateTransactionDto from "../../models/transaction/UpdateTransactionDto";
+import BaseException from "../../models/bases/BaseException";
 
 import logger from "../../configs/logger/logger";
-import BaseException from "../../models/bases/BaseException";
-import { HttpStatusCode } from "../../models/enums/HttpStatusCode";
 import prisma from "../../configs/db/prisma";
+
 import dateConvertion from "../../handlers/dateConvertion";
+import { transactionFieldsToChange } from "../../types/transactionFieldsToChange";
 
 @injectable()
 export default class TransactionService implements ITransactionService {
@@ -113,16 +116,16 @@ export default class TransactionService implements ITransactionService {
             data.bankAccountId,
         );
 
-        const newBalance = this.CalculateNewBalance(
+        const newBalance = this.CalculateNewBalanceWhenCreate(
             account.balance,
             data.value,
             data.type,
         );
 
-        data.date = dateConvertion(data.date.toString());
-
         try {
             const transaction = await this._prisma.$transaction(async (tx) => {
+                data.date = dateConvertion(data.date.toString());
+
                 const transactionData =
                     await this._transactionRepository.Create(data, tx);
 
@@ -168,44 +171,248 @@ export default class TransactionService implements ITransactionService {
     async Update(
         id: string,
         userId: string,
-        data: TransactionDto,
+        data: UpdateTransactionDto,
     ): Promise<Transaction> {
-        throw new Error("Method not implemented.");
-    }
+        const oldTransaction = await this.GetPerId(id, userId);
 
-    async Delete(id: string): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
-
-    // Private methods
-
-    private async VerifyIfTransactionExists(
-        id: string,
-        userId: string,
-    ): Promise<void> {
-        const transaction = await this._transactionRepository.GetPerId(
-            userId,
-            id,
+        this._logger.info(
+            `[${this.SERVICE_NAME}-${this.Update.name}] Updating the transaction | TransactionId: ${id} | UserId: ${userId}`,
+            {
+                service_name: this.SERVICE_NAME,
+                method_name: this.Update.name,
+                userId,
+                transactionId: id,
+            },
         );
 
-        if (transaction == null) {
-            this._logger.info(
-                `[${this.SERVICE_NAME}-${this.VerifyIfTransactionExists.name}] Transaction not found | TransactionId: ${id}`,
+        try {
+            const transactionUpdated = await this._prisma.$transaction(
+                async (tx) => {
+                    const fieldsToChange = this.VerifyWhatFieldsChange(data);
+
+                    if (fieldsToChange.date) {
+                        this._logger.info(
+                            `[${this.SERVICE_NAME}-${this.Update.name}] Updating date to transaction | UserId: ${userId} | TransactionId: ${oldTransaction.id}`,
+                            {
+                                service_name: this.SERVICE_NAME,
+                                method_name: this.Update.name,
+                                userId,
+                                transactionId: oldTransaction.id,
+                                fieldUpdated: "date",
+                            },
+                        );
+
+                        data.date = dateConvertion(data.date.toString());
+                    }
+
+                    const transaction =
+                        await this._transactionRepository.Update(
+                            id,
+                            userId,
+                            data,
+                            tx,
+                        );
+
+                    if (
+                        fieldsToChange.bankAccountId &&
+                        transaction.bankAccountId !=
+                            oldTransaction.bankAccountId
+                    ) {
+                        this._logger.info(
+                            `[${this.SERVICE_NAME}-${this.Update.name}] Updating bank account to transaction | UserId: ${userId} | TransactionId: ${transaction.id}`,
+                            {
+                                service_name: this.SERVICE_NAME,
+                                method_name: this.Update.name,
+                                userId,
+                                transactionId: transaction.id,
+                                fieldUpdated: "bankAccount",
+                            },
+                        );
+
+                        const newAccount =
+                            await this._bankAccountService.GetPerId(
+                                transaction.id,
+                            );
+
+                        const oldAccount =
+                            await this._bankAccountService.GetPerId(
+                                oldTransaction.id,
+                            );
+
+                        // Restore account balance from old account
+
+                        const balanceRestored =
+                            this.CalculateNewBalanceWhenRemove(
+                                oldAccount.balance,
+                                transaction.value,
+                                transaction.type,
+                            );
+
+                        await this._bankAccountService.UpdateBalance(
+                            oldAccount.id,
+                            balanceRestored,
+                            tx,
+                        );
+
+                        // Apply the new transaction value in the new account
+
+                        const balance = this.CalculateNewBalanceWhenCreate(
+                            newAccount.balance,
+                            transaction.value,
+                            transaction.type,
+                        );
+
+                        await this._bankAccountService.UpdateBalance(
+                            newAccount.id,
+                            balance,
+                            tx,
+                        );
+
+                        return transaction;
+                    }
+
+                    if (
+                        fieldsToChange.value &&
+                        transaction.value != oldTransaction.value
+                    ) {
+                        this._logger.info(
+                            `[${this.SERVICE_NAME}-${this.Update.name}] Updating value to transaction | UserId: ${userId} | TransactionId: ${transaction.id}`,
+                            {
+                                service_name: this.SERVICE_NAME,
+                                method_name: this.Update.name,
+                                userId,
+                                transactionId: transaction.id,
+                                fieldUpdated: "value",
+                            },
+                        );
+
+                        const account = await this._bankAccountService.GetPerId(
+                            transaction.bankAccountId,
+                        );
+
+                        let balance: number;
+
+                        if (transaction.type == TransactionType.Entry) {
+                            if (transaction.value > oldTransaction.value) {
+                                const difference =
+                                    transaction.value - oldTransaction.value;
+
+                                balance = account.balance + difference;
+                            } else {
+                                const difference =
+                                    oldTransaction.value - transaction.value;
+
+                                balance = account.balance - difference;
+                            }
+                        } else {
+                            if (transaction.value > oldTransaction.value) {
+                                const difference =
+                                    transaction.value - oldTransaction.value;
+
+                                balance = account.balance - difference;
+                            } else {
+                                const difference =
+                                    oldTransaction.value - transaction.value;
+
+                                balance = account.balance + difference;
+                            }
+
+                            if (balance < 0) {
+                                throw new BaseException(
+                                    "Balance is negative",
+                                    HttpStatusCode.BAD_REQUEST,
+                                );
+                            }
+                        }
+
+                        await this._bankAccountService.UpdateBalance(
+                            transaction.bankAccountId,
+                            balance,
+                            tx,
+                        );
+                    }
+
+                    if (
+                        fieldsToChange.type &&
+                        transaction.type != oldTransaction.type
+                    ) {
+                        this._logger.info(
+                            `[${this.SERVICE_NAME}-${this.Update.name}] Updating type to transaction | UserId: ${userId} | TransactionId: ${transaction.id}`,
+                            {
+                                service_name: this.SERVICE_NAME,
+                                method_name: this.Update.name,
+                                userId,
+                                transactionId: transaction.id,
+                                fieldUpdated: "type",
+                            },
+                        );
+
+                        throw new BaseException("Condition not implemented");
+                    }
+
+                    return transaction;
+                },
+            );
+
+            return transactionUpdated;
+        } catch (err: unknown) {
+            this._logger.error(
+                `[${this.SERVICE_NAME}-${this.Update.name}] Error to create a new transaction | Error: ${err} | UserId: ${userId}`,
                 {
                     service_name: this.SERVICE_NAME,
-                    method_name: this.VerifyIfTransactionExists.name,
-                    transactionId: id,
+                    method_name: this.Update.name,
+                    userId: userId,
+                    error: err,
                 },
             );
 
             throw new BaseException(
-                "Transaction not found",
-                HttpStatusCode.NOT_FOUND,
+                "An error occurred when updating the transaction",
+                HttpStatusCode.INTERNAL_SERVER_ERROR,
+                err,
             );
         }
     }
 
-    private CalculateNewBalance(
+    async Delete(id: string, userId: string): Promise<void> {
+        const transaction = await this.GetPerId(id, userId);
+        const account = await this._bankAccountService.GetPerId(
+            transaction.bankAccountId,
+        );
+
+        const newBalance = this.CalculateNewBalanceWhenRemove(
+            account.balance,
+            transaction.value,
+            transaction.type,
+        );
+
+        await this._prisma.$transaction(async (tx) => {
+            await this._bankAccountService.UpdateBalance(
+                transaction.bankAccountId,
+                newBalance,
+                tx,
+            );
+
+            await this._transactionRepository.Delete(id, tx);
+        });
+    }
+
+    // Private methods
+
+    /**
+     * Calculates the new account balance when creating a transaction.
+     *
+     * If the transaction type is an entry, the transaction value is added to the account balance.
+     * If the transaction type is not an entry (e.g., an exit), the transaction value is subtracted from the account balance.
+     * Throws an exception if the transaction value exceeds the current account balance for non-entry transactions.
+     *
+     * @param accountBalance - The current balance of the account.
+     * @param transactionValue - The value of the transaction to be applied.
+     * @param transactionType - The type of the transaction (e.g., entry or exit).
+     * @returns The new account balance after applying the transaction.
+     * @throws {BaseException} If the transaction value is greater than the account balance for non-entry transactions.
+     */
+    private CalculateNewBalanceWhenCreate(
         accountBalance: number,
         transactionValue: number,
         transactionType: string,
@@ -222,5 +429,57 @@ export default class TransactionService implements ITransactionService {
 
             return accountBalance - transactionValue;
         }
+    }
+
+    /**
+     * Calculates the new account balance when a transaction is deleted.
+     *
+     * If the transaction type is `Exit`, the transaction value is added back to the account balance.
+     * Otherwise, the transaction value is subtracted from the account balance, unless the transaction value
+     * exceeds the current balance, in which case an exception is thrown.
+     *
+     * @param accountBalance - The current balance of the account.
+     * @param transactionValue - The value of the transaction being deleted.
+     * @param transactionType - The type of the transaction (e.g., Entry or Exit).
+     * @returns The new account balance after deleting the transaction.
+     * @throws {BaseException} If the transaction value is greater than the account balance for non-Exit transactions.
+     */
+    private CalculateNewBalanceWhenRemove(
+        accountBalance: number,
+        transactionValue: number,
+        transactionType: string,
+    ): number {
+        if (transactionType == TransactionType.Exit) {
+            return accountBalance + transactionValue;
+        } else {
+            if (transactionValue > accountBalance) {
+                throw new BaseException(
+                    "The transaction value is greater than your account balance",
+                    HttpStatusCode.BAD_REQUEST,
+                );
+            }
+
+            return accountBalance - transactionValue;
+        }
+    }
+
+    private VerifyWhatFieldsChange(
+        data: UpdateTransactionDto,
+    ): transactionFieldsToChange {
+        const fieldsToChange: transactionFieldsToChange = {
+            value: false,
+            bankAccountId: false,
+            expenseId: false,
+            type: false,
+            date: false,
+        };
+
+        for (const key of Object.keys(fieldsToChange)) {
+            if (data[key as keyof UpdateTransactionDto] !== undefined) {
+                fieldsToChange[key as keyof typeof fieldsToChange] = true;
+            }
+        }
+
+        return fieldsToChange;
     }
 }

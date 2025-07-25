@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { HttpStatusCode } from "../../models/enums/HttpStatusCode";
 import { inject, injectable } from "tsyringe";
 import { BankAccount, Transaction, TransactionType } from "@prisma/client";
@@ -290,40 +289,12 @@ export default class TransactionService implements ITransactionService {
                             transaction.bankAccountId,
                         );
 
-                        let balance: number;
-
-                        if (transaction.type == TransactionType.Entry) {
-                            if (transaction.value > oldTransaction.value) {
-                                const difference =
-                                    transaction.value - oldTransaction.value;
-
-                                balance = account.balance + difference;
-                            } else {
-                                const difference =
-                                    oldTransaction.value - transaction.value;
-
-                                balance = account.balance - difference;
-                            }
-                        } else {
-                            if (transaction.value > oldTransaction.value) {
-                                const difference =
-                                    transaction.value - oldTransaction.value;
-
-                                balance = account.balance - difference;
-                            } else {
-                                const difference =
-                                    oldTransaction.value - transaction.value;
-
-                                balance = account.balance + difference;
-                            }
-
-                            if (balance < 0) {
-                                throw new BaseException(
-                                    "Balance is negative",
-                                    HttpStatusCode.BAD_REQUEST,
-                                );
-                            }
-                        }
+                        const balance =
+                            this.CalculateNewBalanceWhenValueIsUpdate(
+                                transaction,
+                                oldTransaction,
+                                account,
+                            );
 
                         await this._bankAccountService.UpdateBalance(
                             transaction.bankAccountId,
@@ -463,6 +434,68 @@ export default class TransactionService implements ITransactionService {
         }
     }
 
+    /**
+     * Calculates the new account balance when a transaction's value is updated.
+     *
+     * This method determines the difference between the old and new transaction values,
+     * and adjusts the account balance accordingly based on the transaction type (Entry or otherwise).
+     * For Entry transactions, the balance increases or decreases depending on whether the value increased or decreased.
+     * For other transaction types, the balance is adjusted inversely, and an exception is thrown if the resulting balance is negative.
+     *
+     * @param transaction - The updated transaction object.
+     * @param oldTransaction - The original transaction object before the update.
+     * @param account - The bank account associated with the transaction.
+     * @returns The new calculated balance after applying the transaction update.
+     * @throws BaseException If the resulting balance is negative for non-Entry transactions.
+     */
+    private CalculateNewBalanceWhenValueIsUpdate(
+        transaction: Transaction,
+        oldTransaction: Transaction,
+        account: BankAccount,
+    ): number {
+        let balance: number;
+
+        if (transaction.type == TransactionType.Entry) {
+            if (transaction.value > oldTransaction.value) {
+                const difference = transaction.value - oldTransaction.value;
+
+                balance = account.balance + difference;
+            } else {
+                const difference = oldTransaction.value - transaction.value;
+
+                balance = account.balance - difference;
+            }
+        } else {
+            if (transaction.value > oldTransaction.value) {
+                const difference = transaction.value - oldTransaction.value;
+
+                balance = account.balance - difference;
+            } else {
+                const difference = oldTransaction.value - transaction.value;
+
+                balance = account.balance + difference;
+            }
+
+            if (balance < 0) {
+                throw new BaseException(
+                    "Balance is negative",
+                    HttpStatusCode.BAD_REQUEST,
+                );
+            }
+        }
+
+        return balance;
+    }
+
+    /**
+     * Determines which fields in the transaction are being updated based on the provided data.
+     *
+     * Iterates over the possible transaction fields and checks if each field is present (not `undefined`)
+     * in the `UpdateTransactionDto` object. Returns an object indicating which fields are to be changed.
+     *
+     * @param data - The data transfer object containing the fields to update in the transaction.
+     * @returns An object with boolean flags for each transaction field, set to `true` if the field is present in `data`.
+     */
     private VerifyWhatFieldsChange(
         data: UpdateTransactionDto,
     ): transactionFieldsToChange {

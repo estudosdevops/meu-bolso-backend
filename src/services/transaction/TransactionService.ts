@@ -303,24 +303,6 @@ export default class TransactionService implements ITransactionService {
                         );
                     }
 
-                    if (
-                        fieldsToChange.type &&
-                        transaction.type != oldTransaction.type
-                    ) {
-                        this._logger.info(
-                            `[${this.SERVICE_NAME}-${this.Update.name}] Updating type to transaction | UserId: ${userId} | TransactionId: ${transaction.id}`,
-                            {
-                                service_name: this.SERVICE_NAME,
-                                method_name: this.Update.name,
-                                userId,
-                                transactionId: transaction.id,
-                                fieldUpdated: "type",
-                            },
-                        );
-
-                        throw new BaseException("Condition not implemented");
-                    }
-
                     return transaction;
                 },
             );
@@ -503,7 +485,6 @@ export default class TransactionService implements ITransactionService {
             value: false,
             bankAccountId: false,
             expenseId: false,
-            type: false,
             date: false,
         };
 

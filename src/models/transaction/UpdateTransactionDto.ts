@@ -21,18 +21,10 @@ export default class UpdateTransactionDto {
     public date!: Date;
 
     @IsOptional()
-    @IsEnum(TransactionType)
-    public type!: TransactionType;
-
-    @IsOptional()
     @IsString()
     public bankAccountId!: string;
 
     @IsOptional()
     @IsString()
     public description!: string;
-
-    @IsOptional()
-    @IsString()
-    public expenseId!: string;
 }

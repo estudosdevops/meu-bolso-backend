@@ -329,6 +329,7 @@ export default class TransactionService implements ITransactionService {
 
     async Delete(id: string, userId: string): Promise<void> {
         const transaction = await this.GetPerId(id, userId);
+
         const account = await this._bankAccountService.GetPerId(
             transaction.bankAccountId,
         );
@@ -339,15 +340,34 @@ export default class TransactionService implements ITransactionService {
             transaction.type,
         );
 
-        await this._prisma.$transaction(async (tx) => {
-            await this._bankAccountService.UpdateBalance(
-                transaction.bankAccountId,
-                newBalance,
-                tx,
+        try {
+            await this._prisma.$transaction(async (tx) => {
+                await this._bankAccountService.UpdateBalance(
+                    transaction.bankAccountId,
+                    newBalance,
+                    tx,
+                );
+
+                await this._transactionRepository.Delete(id, tx);
+            });
+        } catch (err: unknown) {
+            this._logger.error(
+                `[${this.SERVICE_NAME}-${this.Delete.name}] Error to delete a transaction | Error: ${err} | UserId: ${userId} | TransactionId: ${transaction.id}`,
+                {
+                    service_name: this.SERVICE_NAME,
+                    method_name: this.Delete.name,
+                    userId: userId,
+                    transactionId: transaction.id,
+                    error: err,
+                },
             );
 
-            await this._transactionRepository.Delete(id, tx);
-        });
+            throw new BaseException(
+                "An error occurred when delete the transaction",
+                HttpStatusCode.INTERNAL_SERVER_ERROR,
+                err,
+            );
+        }
     }
 
     // Private methods

@@ -1,5 +1,5 @@
 import { TransactionType } from "@prisma/client";
-import { TransactionRepository } from "../../../repositories/transaction/TransactionRepository";
+import TransactionRepository from "../../../repositories/transaction/TransactionRepository";
 import { prismaMock } from "../../setup/setupPrisma";
 import TransactionDto from "../../../models/transaction/TransactioDto";
 
@@ -35,15 +35,15 @@ describe("Success TransactionRepository methods", () => {
     test("should create new transaction", async () => {
         prismaMock.transaction.create.mockResolvedValue(transactionPrismaMock);
 
-        const transactionMock = new TransactionDto(
-            transactionPrismaMock.value,
-            transactionPrismaMock.date,
-            transactionPrismaMock.type as TransactionType,
-            transactionPrismaMock.userId,
-            transactionPrismaMock.bankAccountId,
-            transactionPrismaMock.description ?? undefined,
-            transactionPrismaMock.expenseId ?? undefined,
-        );
+        const transactionMock: TransactionDto = {
+            value: transactionPrismaMock.value,
+            date: transactionPrismaMock.date,
+            type: transactionPrismaMock.type as TransactionType,
+            userId: transactionPrismaMock.userId,
+            bankAccountId: transactionPrismaMock.bankAccountId,
+            description: transactionPrismaMock.description ?? "",
+            expenseId: transactionPrismaMock.expenseId ?? "",
+        };
 
         const transactionCreated =
             await transactionRepository.Create(transactionMock);
@@ -88,15 +88,15 @@ describe("Success TransactionRepository methods", () => {
             transactionPrismaMockUpdated,
         );
 
-        const transactionDtoUpdated = new TransactionDto(
-            transactionPrismaMockUpdated.value,
-            transactionPrismaMockUpdated.date,
-            transactionPrismaMockUpdated.type as TransactionType,
-            transactionPrismaMockUpdated.userId,
-            transactionPrismaMockUpdated.bankAccountId,
-            transactionPrismaMockUpdated.description ?? undefined,
-            transactionPrismaMockUpdated.expenseId ?? undefined,
-        );
+        const transactionDtoUpdated: TransactionDto = {
+            value: transactionPrismaMockUpdated.value,
+            date: transactionPrismaMockUpdated.date,
+            type: transactionPrismaMockUpdated.type as TransactionType,
+            userId: transactionPrismaMockUpdated.userId,
+            bankAccountId: transactionPrismaMockUpdated.bankAccountId,
+            description: transactionPrismaMockUpdated.description ?? "",
+            expenseId: transactionPrismaMockUpdated.expenseId ?? "",
+        };
 
         const transaction = await transactionRepository.Update(
             transactionPrismaMock.id,

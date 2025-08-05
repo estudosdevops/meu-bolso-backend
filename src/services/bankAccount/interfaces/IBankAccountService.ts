@@ -1,4 +1,4 @@
-import { BankAccount } from "@prisma/client";
+import { BankAccount, Prisma } from "@prisma/client";
 import BankAccountDto from "../../../models/bankAccount/BankAccountDto";
 
 export default interface IBankAccountService {
@@ -10,7 +10,11 @@ export default interface IBankAccountService {
 
     Update(accountId: string, data: BankAccountDto): Promise<BankAccount>;
 
-    UpdateBalance(accountId: string, balance: number): Promise<BankAccount>;
+    UpdateBalance(
+        accountId: string,
+        balance: number,
+        tx?: Prisma.TransactionClient,
+    ): Promise<BankAccount>;
 
     Delete(accountId: string): Promise<void>;
 }

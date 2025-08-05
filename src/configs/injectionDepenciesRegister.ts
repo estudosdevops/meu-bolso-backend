@@ -16,7 +16,7 @@ import IExpenseCategoryRepository from "../repositories/expenseCategory/interfac
 import ExpenseCategoryRepository from "../repositories/expenseCategory/ExpenseCategoryRepository";
 
 import ITransactionRepository from "../repositories/transaction/interfaces/ITransactionRepository";
-import { TransactionRepository } from "../repositories/transaction/TransactionRepository";
+import TransactionRepository from "../repositories/transaction/TransactionRepository";
 
 import AuthRepository from "../repositories/auth/AuthRepository";
 import IAuthRepository from "../repositories/auth/interfaces/IAuthRepository";
@@ -53,8 +53,12 @@ import BankService from "../services/bank/BankService";
 import IBankAccountService from "../services/bankAccount/interfaces/IBankAccountService";
 import BankAccountService from "../services/bankAccount/BankAccountService";
 
+import ITransactionService from "../services/transaction/interfaces/ITransactionService";
+import TransactionService from "../services/transaction/TransactionService";
+
 container
     .register<IUserService>("IUserService", UserService)
     .register<IAuthService>("IAuthService", AuthService)
     .register<IBankService>("IBankService", BankService)
-    .register<IBankAccountService>("IBankAccountService", BankAccountService);
+    .register<IBankAccountService>("IBankAccountService", BankAccountService)
+    .register<ITransactionService>("ITransactionService", TransactionService);

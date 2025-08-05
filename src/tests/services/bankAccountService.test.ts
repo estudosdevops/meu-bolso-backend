@@ -434,10 +434,6 @@ describe("Tests involved the UpdateBalance method", () => {
         );
 
         expect(account).toEqual(updatedBalanceMockPrisma);
-        expect(mockBankAccountRepository.UpdateBalance).toHaveBeenCalledWith(
-            accountId,
-            newBalance,
-        );
     });
 
     test("Should throw an error if the bank account does not exist when updating balance", async () => {

@@ -1,4 +1,4 @@
-import { BankAccount } from "@prisma/client";
+import { BankAccount, Prisma } from "@prisma/client";
 import { HttpStatusCode } from "../../models/enums/HttpStatusCode";
 import { inject, injectable } from "tsyringe";
 
@@ -155,6 +155,7 @@ export default class BankAccountService implements IBankAccountService {
     async UpdateBalance(
         accountId: string,
         balance: number,
+        tx?: Prisma.TransactionClient,
     ): Promise<BankAccount> {
         await this.ValidateIfBankAccountExists(accountId);
 
@@ -170,6 +171,7 @@ export default class BankAccountService implements IBankAccountService {
         const account = await this._bankAccountRepository.UpdateBalance(
             accountId,
             balance,
+            tx,
         );
 
         this._logger.info(

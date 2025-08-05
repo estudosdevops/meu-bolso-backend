@@ -1,4 +1,4 @@
-import { BankAccount } from "@prisma/client";
+import { BankAccount, Prisma } from "@prisma/client";
 import prisma from "../../configs/db/prisma";
 import BankAccountDto from "../../models/bankAccount/BankAccountDto";
 import IBankAccountRepository from "./interfaces/IBankAccountRepository";
@@ -49,8 +49,11 @@ export default class BankAccountRepository implements IBankAccountRepository {
     async UpdateBalance(
         bankAccountId: string,
         balance: number,
+        tx?: Prisma.TransactionClient,
     ): Promise<BankAccount> {
-        return await this._prisma.bankAccount.update({
+        const client = tx ?? this._prisma;
+
+        return await client.bankAccount.update({
             where: {
                 id: bankAccountId,
                 active: true,

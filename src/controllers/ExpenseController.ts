@@ -15,6 +15,8 @@ export default class ExpenseController {
         private readonly _expenseCategoryService: IExpenseCategoryService,
     ) {}
 
+    // Expense Category Methods
+
     async GetAllExpensesCategory(req: Request, res: Response): Promise<void> {
         const { userId } = req.params;
 
@@ -63,6 +65,50 @@ export default class ExpenseController {
         const { id } = req.params;
 
         await this._expenseCategoryService.Delete(id);
+
+        res.status(HttpStatusCode.NO_CONTENT).json();
+    }
+
+    // Expenses Controller Methods
+
+    async GetAllExpenses(req: Request, res: Response): Promise<void> {
+        const { userId } = req.params;
+
+        const response = await this._expenseService.GetAll(userId);
+
+        res.status(HttpStatusCode.OK).json(response);
+    }
+
+    async GetExpensePerId(req: Request, res: Response): Promise<void> {
+        const { id, userId } = req.params;
+
+        const response = await this._expenseService.GetPerId(id, userId);
+
+        res.status(HttpStatusCode.OK).json(response);
+    }
+
+    async CreateExpense(req: Request, res: Response): Promise<void> {
+        const { userId } = req.params;
+        const data = req.body;
+
+        const response = await this._expenseService.Create(userId, data);
+
+        res.status(HttpStatusCode.OK).json(response);
+    }
+
+    async UpdateExpense(req: Request, res: Response): Promise<void> {
+        const { userId, id } = req.params;
+        const data = req.body;
+
+        const response = await this._expenseService.Update(userId, id, data);
+
+        res.status(HttpStatusCode.OK).json(response);
+    }
+
+    async DeleteExpense(req: Request, res: Response): Promise<void> {
+        const { id } = req.params;
+
+        await this._expenseService.Delete(id);
 
         res.status(HttpStatusCode.NO_CONTENT).json();
     }

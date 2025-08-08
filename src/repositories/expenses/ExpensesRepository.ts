@@ -43,7 +43,7 @@ export default class ExpensesRepository implements IExpensesRepository {
             },
             data: {
                 ...data,
-                updatedAt: Date.now().toString(),
+                updatedAt: new Date(Date.now()),
             },
         });
     }

@@ -15,7 +15,7 @@ export default class ExpensesDto {
     @IsString()
     public name!: string;
 
-    @IsOptional()
+    @IsDefined()
     @IsNumber({ maxDecimalPlaces: 2 })
     @IsPositive()
     @Min(0.01)
@@ -25,7 +25,7 @@ export default class ExpensesDto {
     @IsEnum(ExpenseType)
     public type!: ExpenseType;
 
-    @IsDefined()
+    @IsOptional()
     @IsBoolean()
     public paid!: boolean;
 

@@ -82,7 +82,7 @@ model Transaction {
   date        DateTime
   type        TransactionType
 
-  expense   Expense? @relation(fields: [expenseId], references: [id])
+  expense   Expense? @relation(fields: [expenseId], references: [id], onDelete: SetNull)
   expenseId String?
 
   bankAccount   BankAccount @relation(fields: [bankAccountId], references: [id])

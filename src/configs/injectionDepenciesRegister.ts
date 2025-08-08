@@ -56,9 +56,20 @@ import BankAccountService from "../services/bankAccount/BankAccountService";
 import ITransactionService from "../services/transaction/interfaces/ITransactionService";
 import TransactionService from "../services/transaction/TransactionService";
 
+import IExpenseCategoryService from "../services/expense/interfaces/IExpenseCategoryService";
+import ExpenseCategoryService from "../services/expense/ExpenseCategoryService";
+
+import IExpenseService from "../services/expense/interfaces/IExpenseService";
+import ExpenseService from "../services/expense/ExpenseService";
+
 container
     .register<IUserService>("IUserService", UserService)
     .register<IAuthService>("IAuthService", AuthService)
     .register<IBankService>("IBankService", BankService)
     .register<IBankAccountService>("IBankAccountService", BankAccountService)
-    .register<ITransactionService>("ITransactionService", TransactionService);
+    .register<ITransactionService>("ITransactionService", TransactionService)
+    .register<IExpenseService>("IExpenseService", ExpenseService)
+    .register<IExpenseCategoryService>(
+        "IExpenseCategoryService",
+        ExpenseCategoryService,
+    );

@@ -101,6 +101,7 @@ model Expense {
   id    String      @id @unique @default(uuid())
   name  String
   value Float? // Value is optional when type is fixed 
+  paid  Boolean     @default(false)
   type  ExpenseType
 
   transaction Transaction[]
@@ -108,8 +109,8 @@ model Expense {
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
-  category   ExpenseCategory @relation(fields: [categoryId], references: [id])
-  categoryId String
+  category   ExpenseCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId String?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime?

@@ -45,7 +45,7 @@ export default class ExpenseCategoryRepository
             },
             data: {
                 name,
-                updatedAt: Date.now().toString(),
+                updatedAt: new Date(Date.now()),
             },
         });
     }

@@ -1,7 +1,5 @@
-import { TransactionType } from "@prisma/client";
 import {
     IsDateString,
-    IsEnum,
     IsNumber,
     IsOptional,
     IsPositive,

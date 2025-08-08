@@ -1,3 +1,4 @@
+import { ExpenseType } from "@prisma/client";
 import ExpensesDto from "../../../models/expenses/ExpensesDto";
 import ExpensesRepository from "../../../repositories/expenses/ExpensesRepository";
 import { prismaMock } from "../../setup/setupPrisma";
@@ -6,7 +7,8 @@ type expensePrisma = {
     id: string;
     userId: string;
     name: string;
-    value: number | null;
+    paid: boolean;
+    value: number;
     type: "Fixed" | "Variable";
     categoryId: string;
     createdAt: Date;
@@ -20,8 +22,9 @@ describe("Success ExpensesRepository methods", () => {
         id: "exp-123",
         userId: "user-123",
         name: "Aluguel",
+        paid: false,
         value: 100.5,
-        type: "Fixed",
+        type: ExpenseType.Fixed,
         categoryId: "cat-123",
         createdAt: new Date(),
         updatedAt: null,
@@ -30,11 +33,13 @@ describe("Success ExpensesRepository methods", () => {
     test("should create new expense", async () => {
         prismaMock.expense.create.mockResolvedValue(expensePrismaMock);
 
-        const expenseMock = new ExpensesDto(
-            expensePrismaMock.name,
-            expensePrismaMock.type,
-            expensePrismaMock.categoryId,
-        );
+        const expenseMock: ExpensesDto = {
+            name: expensePrismaMock.name,
+            paid: expensePrismaMock.paid,
+            value: expensePrismaMock.value,
+            type: expensePrismaMock.type,
+            categoryId: expensePrismaMock.categoryId,
+        };
 
         const expenseCreated = await expensesRepository.Create(
             expenseMock,
@@ -74,11 +79,13 @@ describe("Success ExpensesRepository methods", () => {
 
         prismaMock.expense.update.mockResolvedValue(expensePrismaMockUpdated);
 
-        const expenseDtoUpdated = new ExpensesDto(
-            expensePrismaMockUpdated.name,
-            expensePrismaMockUpdated.type,
-            expensePrismaMockUpdated.categoryId,
-        );
+        const expenseDtoUpdated: ExpensesDto = {
+            name: expensePrismaMockUpdated.name,
+            type: expensePrismaMockUpdated.type,
+            categoryId: expensePrismaMockUpdated.categoryId,
+            paid: expensePrismaMockUpdated.paid,
+            value: expensePrismaMockUpdated.value,
+        };
 
         const expense = await expensesRepository.Update(
             expenseDtoUpdated,

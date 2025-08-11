@@ -1,11 +1,60 @@
 {
-  "name": "finance-system-back",
+  "name": "meu-bolso-back",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "dev": "tsnd --exit-child src/index.ts",
+    "start": "node dist/index.js",
+    "prod": "tsc && node dist/index.js",
+    "db:deploy": "npx prisma migrate deploy && npx prisma generate",
+    "lint": "eslint .",
+    "test": "jest",
+    "prepare": "node -e \"if (process.env.NODE_ENV !== 'production'){ process.exit(1) } \" || husky"
+  },
+  "lint-staged": {
+    "src/*.ts": "eslint .",
+    "prisma/schema.prisma": "prisma format && prisma validate",
+    "**/*": "prettier --write --ignore-unknown",
+    "tests/*.test.*": "jest"
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@mermaid-js/mermaid-cli": "^11.4.3",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "eslint": "^9.28.0",
+    "globals": "^16.2.0",
+    "husky": "^9.1.7",
+    "jest": "^30.0.0",
+    "jest-mock-extended": "^4.0.0",
+    "lint-staged": "^16.1.0",
+    "prettier": "3.5.3",
+    "prisma": "^6.9.0",
+    "prisma-erd-generator": "^2.0.4",
+    "ts-jest": "^29.4.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "bcrypt": "^6.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "reflect-metadata": "^0.2.2",
+    "tsyringe": "^4.10.0",
+    "winston": "^3.17.0",
+    "winston-loki": "^6.1.3"
+  }
 }

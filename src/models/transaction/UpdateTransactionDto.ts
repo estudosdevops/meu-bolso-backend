@@ -1,0 +1,28 @@
+import {
+    IsDateString,
+    IsNumber,
+    IsOptional,
+    IsPositive,
+    IsString,
+    Min,
+} from "class-validator";
+
+export default class UpdateTransactionDto {
+    @IsOptional()
+    @IsNumber({ maxDecimalPlaces: 2 })
+    @IsPositive()
+    @Min(0.01)
+    public value!: number;
+
+    @IsOptional()
+    @IsDateString()
+    public date!: Date;
+
+    @IsOptional()
+    @IsString()
+    public bankAccountId!: string;
+
+    @IsOptional()
+    @IsString()
+    public description!: string;
+}

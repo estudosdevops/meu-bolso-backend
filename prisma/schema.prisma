@@ -1,0 +1,157 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator erd {
+  provider                  = "prisma-erd-generator"
+  output                    = "./DER.svg"
+  includeRelationFromFields = true
+  disabled                  = env("DISABLE_ERD")
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Authentication {
+  id           String  @id @unique @default(uuid())
+  password     String  @db.VarChar(255)
+  refreshToken String?
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+}
+
+model User {
+  id     String  @id @unique @default(uuid())
+  name   String
+  email  String  @unique
+  cpf    String  @unique
+  active Boolean @default(true)
+
+  auth Authentication?
+
+  bankingAccounts BankAccount[]
+  banks           Bank[]
+  transaction     Transaction[]
+
+  expenses        Expense[]
+  expenseCategory ExpenseCategory[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+
+  @@map("users")
+}
+
+model BankAccount {
+  id            String  @id @unique @default(uuid())
+  accountNumber String  @unique
+  agency        String  @unique
+  balance       Float
+  active        Boolean @default(true)
+
+  transaction Transaction[]
+
+  bank   Bank?  @relation(fields: [bankId], references: [id])
+  bankId String @unique
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+
+  @@map("bankingAccounts")
+}
+
+model Transaction {
+  id          String          @id @unique @default(uuid())
+  description String?
+  value       Float
+  date        DateTime
+  type        TransactionType
+
+  expense   Expense? @relation(fields: [expenseId], references: [id], onDelete: SetNull)
+  expenseId String?
+
+  bankAccount   BankAccount @relation(fields: [bankAccountId], references: [id])
+  bankAccountId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+
+  @@map("transactions")
+}
+
+model Expense {
+  id    String      @id @unique @default(uuid())
+  name  String
+  value Float? // Value is optional when type is fixed 
+  paid  Boolean     @default(false)
+  type  ExpenseType
+
+  transaction Transaction[]
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  category   ExpenseCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+
+  @@map("expenses")
+}
+
+model ExpenseCategory {
+  id   String @id @unique @default(uuid())
+  name String
+
+  expenses Expense[]
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+
+  @@map("expensesCategories")
+}
+
+model Bank {
+  id    String  @id @unique @default(uuid())
+  compe Int?    @unique
+  ispb  String? @unique
+
+  name String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  bankAccount BankAccount?
+}
+
+enum ExpenseType {
+  Fixed
+  Variable
+}
+
+enum TransactionType {
+  Entry
+  Exit
+}

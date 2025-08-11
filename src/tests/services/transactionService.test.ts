@@ -10,10 +10,12 @@ import BaseException from "../../models/bases/BaseException";
 import TransactionDto from "../../models/transaction/TransactioDto";
 
 import { prismaMock } from "../setup/setupPrisma";
+import IExpenseService from "../../services/expense/interfaces/IExpenseService";
 
 describe("Tests involved the GetAll method", () => {
     let mockTransactionRepository: jest.Mocked<ITransactionRepository>;
     let mockBankAccountService: jest.Mocked<IBankAccountService>;
+    let mockExpenseService: jest.Mocked<IExpenseService>;
 
     let transactionService: TransactionService;
 
@@ -35,9 +37,19 @@ describe("Tests involved the GetAll method", () => {
             Delete: jest.fn(),
         };
 
+        mockExpenseService = {
+            GetAll: jest.fn(),
+            GetPerId: jest.fn(),
+            Create: jest.fn(),
+            Update: jest.fn(),
+            UpdatePaidProperty: jest.fn(),
+            Delete: jest.fn(),
+        };
+
         transactionService = new TransactionService(
             mockTransactionRepository,
             mockBankAccountService,
+            mockExpenseService,
         );
     });
 
@@ -97,6 +109,7 @@ describe("Tests involved the GetAll method", () => {
 describe("Tests involved the GetPerId method", () => {
     let mockTransactionRepository: jest.Mocked<ITransactionRepository>;
     let mockBankAccountService: jest.Mocked<IBankAccountService>;
+    let mockExpenseService: jest.Mocked<IExpenseService>;
 
     let transactionService: TransactionService;
 
@@ -118,9 +131,19 @@ describe("Tests involved the GetPerId method", () => {
             Delete: jest.fn(),
         };
 
+        mockExpenseService = {
+            GetAll: jest.fn(),
+            GetPerId: jest.fn(),
+            Create: jest.fn(),
+            Update: jest.fn(),
+            UpdatePaidProperty: jest.fn(),
+            Delete: jest.fn(),
+        };
+
         transactionService = new TransactionService(
             mockTransactionRepository,
             mockBankAccountService,
+            mockExpenseService,
         );
     });
 
@@ -187,6 +210,7 @@ describe("Tests involved the Create method", () => {
 
     let mockTransactionRepository: jest.Mocked<ITransactionRepository>;
     let mockBankAccountService: jest.Mocked<IBankAccountService>;
+    let mockExpenseService: jest.Mocked<IExpenseService>;
 
     let transactionService: TransactionService;
 
@@ -208,9 +232,19 @@ describe("Tests involved the Create method", () => {
             Delete: jest.fn(),
         };
 
+        mockExpenseService = {
+            GetAll: jest.fn(),
+            GetPerId: jest.fn(),
+            Create: jest.fn(),
+            Update: jest.fn(),
+            UpdatePaidProperty: jest.fn(),
+            Delete: jest.fn(),
+        };
+
         transactionService = new TransactionService(
             mockTransactionRepository,
             mockBankAccountService,
+            mockExpenseService,
         );
     });
 
@@ -365,10 +399,6 @@ describe("Tests involved the Create method", () => {
 });
 
 describe("Tests involved the Update method", () => {
-    let mockTransactionRepository: jest.Mocked<ITransactionRepository>;
-    let mockBankAccountService: jest.Mocked<IBankAccountService>;
-    let transactionService: TransactionService;
-
     const baseTransaction: Transaction = {
         id: "trans-1",
         value: 100,
@@ -394,6 +424,12 @@ describe("Tests involved the Update method", () => {
         updatedAt: null,
     };
 
+    let mockTransactionRepository: jest.Mocked<ITransactionRepository>;
+    let mockBankAccountService: jest.Mocked<IBankAccountService>;
+    let mockExpenseService: jest.Mocked<IExpenseService>;
+
+    let transactionService: TransactionService;
+
     beforeEach(() => {
         mockTransactionRepository = {
             GetAll: jest.fn(),
@@ -412,10 +448,21 @@ describe("Tests involved the Update method", () => {
             Delete: jest.fn(),
         };
 
+        mockExpenseService = {
+            GetAll: jest.fn(),
+            GetPerId: jest.fn(),
+            Create: jest.fn(),
+            Update: jest.fn(),
+            UpdatePaidProperty: jest.fn(),
+            Delete: jest.fn(),
+        };
+
         transactionService = new TransactionService(
             mockTransactionRepository,
             mockBankAccountService,
+            mockExpenseService,
         );
+
         jest.clearAllMocks();
     });
 
@@ -615,6 +662,7 @@ describe("Tests involved the Delete method", () => {
 
     let mockTransactionRepository: jest.Mocked<ITransactionRepository>;
     let mockBankAccountService: jest.Mocked<IBankAccountService>;
+    let mockExpenseService: jest.Mocked<IExpenseService>;
 
     let transactionService: TransactionService;
 
@@ -636,9 +684,19 @@ describe("Tests involved the Delete method", () => {
             Delete: jest.fn(),
         };
 
+        mockExpenseService = {
+            GetAll: jest.fn(),
+            GetPerId: jest.fn(),
+            Create: jest.fn(),
+            Update: jest.fn(),
+            UpdatePaidProperty: jest.fn(),
+            Delete: jest.fn(),
+        };
+
         transactionService = new TransactionService(
             mockTransactionRepository,
             mockBankAccountService,
+            mockExpenseService,
         );
     });
 

@@ -38,6 +38,7 @@ describe("ExpenseService", () => {
             GetPerId: jest.fn(),
             Create: jest.fn(),
             Update: jest.fn(),
+            UpdatePaidProperty: jest.fn(),
             Delete: jest.fn(),
         };
         expenseService = new ExpenseService(mockExpenseRepository);
@@ -131,6 +132,26 @@ describe("ExpenseService", () => {
             expenseDto,
             updatedExpenseMock.userId,
             updatedExpenseMock.id,
+        );
+    });
+
+    test("Should update expense paid property", async () => {
+        const updatedExpenseMock = {
+            ...expenseMock,
+            paid: true,
+        };
+
+        mockExpenseRepository.GetPerId.mockResolvedValue(expenseMock);
+        mockExpenseRepository.UpdatePaidProperty.mockResolvedValue();
+
+        await expenseService.UpdatePaidProperty(
+            updatedExpenseMock.id,
+            updatedExpenseMock.paid,
+        );
+
+        expect(mockExpenseRepository.UpdatePaidProperty).toHaveBeenCalledWith(
+            updatedExpenseMock.id,
+            updatedExpenseMock.paid,
         );
     });
 

@@ -15,6 +15,7 @@ import prisma from "../../configs/db/prisma";
 
 import dateConvertion from "../../handlers/dateConvertion";
 import { transactionFieldsToChange } from "../../types/transactionFieldsToChange";
+import IExpenseService from "../expense/interfaces/IExpenseService";
 
 @injectable()
 export default class TransactionService implements ITransactionService {
@@ -24,6 +25,9 @@ export default class TransactionService implements ITransactionService {
 
         @inject("IBankAccountService")
         private readonly _bankAccountService: IBankAccountService,
+
+        @inject("IExpenseService")
+        private readonly _expenseService: IExpenseService,
     ) {}
 
     private readonly _logger = logger;
@@ -134,6 +138,14 @@ export default class TransactionService implements ITransactionService {
                     tx,
                 );
 
+                if (transactionData.expenseId) {
+                    await this._expenseService.UpdatePaidProperty(
+                        transactionData.expenseId,
+                        true,
+                        tx,
+                    );
+                }
+
                 return transactionData;
             });
 
@@ -143,6 +155,7 @@ export default class TransactionService implements ITransactionService {
                     service_name: this.SERVICE_NAME,
                     method_name: this.Create.name,
                     userId: data.userId,
+                    accountId: data.bankAccountId,
                     transactionType: data.type,
                 },
             );
@@ -172,8 +185,6 @@ export default class TransactionService implements ITransactionService {
         userId: string,
         data: UpdateTransactionDto,
     ): Promise<Transaction> {
-        const oldTransaction = await this.GetPerId(id, userId);
-
         this._logger.info(
             `[${this.SERVICE_NAME}-${this.Update.name}] Updating the transaction | TransactionId: ${id} | UserId: ${userId}`,
             {
@@ -183,6 +194,8 @@ export default class TransactionService implements ITransactionService {
                 transactionId: id,
             },
         );
+
+        const oldTransaction = await this.GetPerId(id, userId);
 
         try {
             const transactionUpdated = await this._prisma.$transaction(
@@ -211,6 +224,38 @@ export default class TransactionService implements ITransactionService {
                             data,
                             tx,
                         );
+
+                    if (
+                        fieldsToChange.expenseId &&
+                        transaction.expenseId != oldTransaction.expenseId
+                    ) {
+                        this._logger.info(
+                            `[${this.SERVICE_NAME}-${this.Update.name}] Updating expense to transaction | UserId: ${userId} | TransactionId: ${transaction.id}`,
+                            {
+                                service_name: this.SERVICE_NAME,
+                                method_name: this.Update.name,
+                                userId,
+                                transactionId: transaction.id,
+                                fieldUpdated: "expense",
+                            },
+                        );
+
+                        if (oldTransaction.expenseId) {
+                            await this._expenseService.UpdatePaidProperty(
+                                oldTransaction.expenseId,
+                                false,
+                                tx,
+                            );
+                        }
+
+                        if (transaction.expenseId) {
+                            await this._expenseService.UpdatePaidProperty(
+                                transaction.expenseId,
+                                true,
+                                tx,
+                            );
+                        }
+                    }
 
                     if (
                         fieldsToChange.bankAccountId &&
@@ -347,6 +392,14 @@ export default class TransactionService implements ITransactionService {
                     newBalance,
                     tx,
                 );
+
+                if (transaction.expenseId) {
+                    await this._expenseService.UpdatePaidProperty(
+                        transaction.expenseId,
+                        false,
+                        tx,
+                    );
+                }
 
                 await this._transactionRepository.Delete(id, tx);
             });

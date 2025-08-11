@@ -1,4 +1,4 @@
-import { Expense } from "@prisma/client";
+import { Expense, Prisma } from "@prisma/client";
 import ExpensesDto from "../../../models/expenses/ExpensesDto";
 
 export default interface IExpenseService {
@@ -13,6 +13,12 @@ export default interface IExpenseService {
         expenseId: string,
         data: ExpensesDto,
     ): Promise<Expense>;
+
+    UpdatePaidProperty(
+        expenseId: string,
+        paid: boolean,
+        tx?: Prisma.TransactionClient,
+    ): Promise<void>;
 
     Delete(expenseId: string): Promise<void>;
 }

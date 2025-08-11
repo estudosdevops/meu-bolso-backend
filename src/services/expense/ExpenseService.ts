@@ -166,6 +166,30 @@ export default class ExpenseService implements IExpenseService {
         return expenseUpdated;
     }
 
+    async UpdatePaidProperty(expenseId: string, paid: boolean): Promise<void> {
+        this._logger.info(
+            `[${this.SERVICE_NAME}-${this.UpdatePaidProperty.name}] Updating paid property of a expense | ExpenseId: ${expenseId} | Paid: ${paid}`,
+            {
+                service_name: this.SERVICE_NAME,
+                method_name: this.UpdatePaidProperty.name,
+                expenseId,
+                paid,
+            },
+        );
+
+        await this._expenseRepository.UpdatePaidProperty(expenseId, paid);
+
+        this._logger.info(
+            `[${this.SERVICE_NAME}-${this.UpdatePaidProperty.name}] Paid property of expense updated with success | ExpenseId: ${expenseId} | Paid: ${paid}`,
+            {
+                service_name: this.SERVICE_NAME,
+                method_name: this.UpdatePaidProperty.name,
+                expenseId,
+                paid,
+            },
+        );
+    }
+
     async Delete(expenseId: string): Promise<void> {
         this._logger.info(
             `[${this.SERVICE_NAME}-${this.Delete.name}] Deleting a expense | ExpenseId: ${expenseId}`,

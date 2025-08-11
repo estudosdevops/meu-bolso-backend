@@ -1,4 +1,4 @@
-import { Expense } from "@prisma/client";
+import { Expense, Prisma } from "@prisma/client";
 
 import prisma from "../../configs/db/prisma";
 import ExpensesDto from "../../models/expenses/ExpensesDto";
@@ -45,6 +45,19 @@ export default class ExpensesRepository implements IExpensesRepository {
                 ...data,
                 updatedAt: new Date(Date.now()),
             },
+        });
+    }
+
+    async UpdatePaidProperty(
+        expenseId: string,
+        paid: boolean,
+        tx?: Prisma.TransactionClient,
+    ): Promise<void> {
+        const client = tx ?? this._prisma;
+
+        await client.expense.update({
+            where: { id: expenseId },
+            data: { paid },
         });
     }
 

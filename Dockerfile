@@ -9,10 +9,8 @@ RUN npm install -D typescript
 
 COPY . .
 
-RUN npm run build
-
 RUN npm ci
 
 EXPOSE 5000
 
-CMD ["node", "dist/index.js"]
+CMD ["sh", "-c", "npm run db:deploy && npm run prod"]

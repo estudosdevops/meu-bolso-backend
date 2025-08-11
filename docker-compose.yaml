@@ -10,8 +10,14 @@ services:
       ports:
         - 5432:5432
       environment:
-        POSTGRES_DB: finance-localhost
+        POSTGRES_DB: "meu-bolso-prod-db"
         POSTGRES_PASSWORD: dockerpass
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready", "-d", "meu-bolso-prod-db"]
+        interval: 30s
+        timeout: 60s
+        retries: 5
+        start_period: 80s
       networks:
         - localNet
     loki:
@@ -62,7 +68,7 @@ services:
         - localNet
     
     api:
-      container_name: finance-api
+      container_name: meu-bolso-api
       build: .
       expose:
         - 5000
@@ -71,3 +77,6 @@ services:
       networks:
         - localNet
       env_file: ./.env.production
+      depends_on:
+        db:
+          condition: service_healthy

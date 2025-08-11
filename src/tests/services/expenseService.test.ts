@@ -135,6 +135,26 @@ describe("ExpenseService", () => {
         );
     });
 
+    test("Should update expense paid property", async () => {
+        const updatedExpenseMock = {
+            ...expenseMock,
+            paid: true,
+        };
+
+        mockExpenseRepository.GetPerId.mockResolvedValue(expenseMock);
+        mockExpenseRepository.UpdatePaidProperty.mockResolvedValue();
+
+        await expenseService.UpdatePaidProperty(
+            updatedExpenseMock.id,
+            updatedExpenseMock.paid,
+        );
+
+        expect(mockExpenseRepository.UpdatePaidProperty).toHaveBeenCalledWith(
+            updatedExpenseMock.id,
+            updatedExpenseMock.paid,
+        );
+    });
+
     test("should throw BaseException when updating a non-existent expense", async () => {
         mockExpenseRepository.GetPerId.mockResolvedValue(null);
 

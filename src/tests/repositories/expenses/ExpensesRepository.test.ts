@@ -97,6 +97,24 @@ describe("Success ExpensesRepository methods", () => {
         expect(expense.updatedAt).not.toBeNull();
     });
 
+    test("should update the paid property of an expense", async () => {
+        const updatedExpense = {
+            ...expensePrismaMock,
+            paid: true,
+        };
+
+        prismaMock.expense.update.mockResolvedValue(updatedExpense);
+
+        await expect(
+            expensesRepository.UpdatePaidProperty(expensePrismaMock.id, true),
+        ).resolves.not.toThrow();
+
+        expect(prismaMock.expense.update).toHaveBeenCalledWith({
+            where: { id: expensePrismaMock.id },
+            data: { paid: true },
+        });
+    });
+
     test("should delete an expense", async () => {
         prismaMock.expense.delete.mockResolvedValue(expensePrismaMock);
 

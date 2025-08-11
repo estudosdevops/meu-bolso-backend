@@ -38,6 +38,7 @@ describe("ExpenseService", () => {
             GetPerId: jest.fn(),
             Create: jest.fn(),
             Update: jest.fn(),
+            UpdatePaidProperty: jest.fn(),
             Delete: jest.fn(),
         };
         expenseService = new ExpenseService(mockExpenseRepository);

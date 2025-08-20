@@ -1,4 +1,9 @@
-import { IsNotEmpty, IsEmail, IsStrongPassword } from "class-validator";
+import {
+    IsNotEmpty,
+    IsEmail,
+    IsStrongPassword,
+    IsOptional,
+} from "class-validator";
 import { Transform } from "class-transformer";
 
 export default class UserDto {
@@ -13,6 +18,6 @@ export default class UserDto {
     @IsStrongPassword()
     public password!: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     public cpf!: string;
 }

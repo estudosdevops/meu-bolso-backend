@@ -30,6 +30,8 @@ model Authentication {
 
   createdAt DateTime  @default(now())
   updatedAt DateTime?
+
+  @@map("authentications")
 }
 
 model User {
@@ -135,8 +137,8 @@ model ExpenseCategory {
 
 model Bank {
   id    String  @id @unique @default(uuid())
-  compe Int?    @unique
-  ispb  String? @unique
+  compe Int?
+  ispb  String?
 
   name String
 
@@ -144,6 +146,8 @@ model Bank {
   userId String
 
   bankAccount BankAccount?
+
+  @@map("banks")
 }
 
 enum ExpenseType {
